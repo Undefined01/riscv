@@ -1,0 +1,7 @@
+db/
+incremental_db/
+output_files/
+simulation/
+*.bak
+riscv.qws
+riscv_nativelink_simulation.rpt

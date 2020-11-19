@@ -73,7 +73,7 @@
 
 // 计算
 `define RTLOP_ADD		4'b0000
-`define RTLOP_SLL		4'b0001
+`define RTLOP_SHL		4'b0001
 `define RTLOP_SLT		4'b0010
 `define RTLOP_SLTU		4'b0011
 `define RTLOP_XOR		4'b0100

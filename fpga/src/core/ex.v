@@ -23,6 +23,14 @@ module ex(
 );
 
 	wire [`DATA_BUS] res_add = src1 + src2;
+	wire [`DATA_BUS] res_shl = src1 << src2;
+	wire [`DATA_BUS] res_slt = $signed(src1) < $signed(src2);
+	wire [`DATA_BUS] res_sltu = src1 < src2;
+	wire [`DATA_BUS] res_xor = src1 ^ src2;
+	wire [`DATA_BUS] res_shr = src1 >> src2;
+	wire [`DATA_BUS] res_sar = $signed(src1) >> $signed(src2);
+	wire [`DATA_BUS] res_or  = src1 | src2;
+	wire [`DATA_BUS] res_and = src1 & src2;
 
 	reg [`DATA_BUS] res;
 	
@@ -32,7 +40,15 @@ module ex(
 
 	always @(*) begin
 		case (rtlop)
-			`RTLOP_ADD: res = res_add;
+			`RTLOP_ADD:	res = res_add;
+			`RTLOP_SHL:	res = res_shl;
+			`RTLOP_SLT:	res = res_slt;
+			`RTLOP_SLTU:res = res_sltu;
+			`RTLOP_XOR:	res = res_xor;
+			`RTLOP_SHR:	res = res_shr;
+			`RTLOP_SAR:	res = res_sar;
+			`RTLOP_OR:	res = res_or;
+			`RTLOP_AND:	res = res_and;
 			default:	res = `DATA_ZERO;
 		endcase
 	end

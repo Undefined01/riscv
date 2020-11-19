@@ -86,14 +86,24 @@ module riscv_test();
 	
 		reset();
 		load("add.hex");
-		tickn(10);
-		`assert(core.gprs.regs[2], 32'h90)
+		tickn(12);
+		`assert(core.gprs.regs[2], 144)
+		`assert(core.gprs.regs[3], 102)
 
 		
 		reset();
 		load("fib10.hex");
 		tickn(35);
 		`assert(core.gprs.regs[2], 89)
+		
+
+		reset();
+		load("arich.hex");
+		tickn(16);
+		`assert(core.gprs.regs[5], 8)
+		`assert(core.gprs.regs[6], 4)
+		`assert(core.gprs.regs[7], 16)
+
 		
 		$dumpflush;
 		$display("All test finished");

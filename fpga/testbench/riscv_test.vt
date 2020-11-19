@@ -31,6 +31,10 @@ module riscv_test();
 		ram_mem_rw, ram_mem_addr, ram_mem_data
 	);
 
+	// 全局状态
+	// 当前测试的名称
+	reg [256*8:1] testname;
+
 	// 辅助函数
 	task tick();
 	begin
@@ -63,7 +67,13 @@ module riscv_test();
 		$readmemh({`TESTBENCH_PWD, "/build/", hexfile}, ram);
 	end
 	endtask
-	
+
+	`define assert(signal, value) \
+        if (signal !== value) begin \
+            $display("ASSERTION FAILED in %m: signal != value"); \
+            $stop; \
+        end
+
 	
 	// 测试集
 	initial
@@ -77,12 +87,13 @@ module riscv_test();
 		reset();
 		load("add.hex");
 		tickn(10);
+		`assert(core.gprs.regs[2], 32'h90)
 
 		
 		reset();
-		load("add.hex");
-		tickn(10);
-		
+		load("fib10.hex");
+		tickn(35);
+		`assert(core.gprs.regs[2], 89)
 		
 		$dumpflush;
 		$display("All test finished");

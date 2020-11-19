@@ -1,16 +1,32 @@
 `timescale 1 ps/ 1 ps
+`include "../src/common.v"
 
 module riscv_test();
 
 	reg clk = 1'b0;
 	reg reset = 1'b0;
-
-	wire [31:0] ram_if_addr, ram_if_data;
-	reg [31:0] ram[128*1024-1:0];
+	
+	
+	reg [`DATA_BUS] ram[128*1024-1:0];
+	wire ram_mem_rw;
+	wire [`DATA_BUS] ram_if_addr, ram_if_data;
+	wire [`DATA_BUS] ram_mem_addr, ram_mem_data;
+	
+	reg [`DATA_BUS] reg_ram_mem_data;
 	assign ram_if_data = ram[ram_if_addr[31:2]];
+	assign ram_mem_data = ram_mem_rw == `MEM_READ ? reg_ram_mem_data : `DATA_Z;
 
+	always @(posedge clk) begin
+		if (ram_mem_rw == `MEM_READ)
+			reg_ram_mem_data <= ram[ram_mem_addr];
+		else
+			ram[ram_mem_addr] <= ram_mem_data;
+	end
+	
 	riscv_core core(
-		clk, reset, ram_if_addr, ram_if_data
+		clk, reset,
+		ram_if_addr, ram_if_data,
+		ram_mem_rw, ram_mem_addr, ram_mem_data
 	);
 
 	

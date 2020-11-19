@@ -2,7 +2,8 @@
 
 `define DATA_WIDTH		32
 `define DATA_BUS		`DATA_WIDTH - 1 : 0
-`define DATA_ZERO		32'd0
+`define DATA_ZERO		{`DATA_WIDTH{1'b0}}
+`define DATA_Z			{`DATA_WIDTH{1'bz}}
 
 `define CPU_RESET_ADDR	32'h0
 
@@ -11,6 +12,8 @@
 
 `define REG_X0			5'd0
 
+`define MEM_READ		1'b0
+`define MEM_WRITE		1'b1
 
 
 // 立即数计算
@@ -80,12 +83,12 @@
 `define RTLOP_AND		4'b0111
 
 // 将计算结果直接存入寄存器
-`define RTLTYPE_CALC	3'b000
+`define RTLTYPE_ARICH	3'b000
 // 将计算结果作为内存地址并读取
 `define RTLTYPE_RMEM	3'b010
 // 将计算结果作为内存地址并写入
 `define RTLTYPE_WMEM	3'b011
 // 将计算结果作为跳转地址
 `define RTLTYPE_JUMP	3'b100
-// 将计算结果作为跳转地址
+// 在条件成立时将计算结果作为跳转地址
 `define RTLTYPE_BRANCH	3'b101

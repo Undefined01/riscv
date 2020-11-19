@@ -31,7 +31,6 @@ module riscv_core(
 	// 转发
 	wire [`REG_BUS]		ex_gprs_waddr;
 	wire [`DATA_BUS]	ex_gprs_wdata;
-	wire				ex_gprs_wena = ex_gprs_waddr != `REG_X0;
 	// 写回
 	wire [`REG_BUS]		wb_gprs_waddr;
 	wire [`DATA_BUS]	wb_gprs_wdata;

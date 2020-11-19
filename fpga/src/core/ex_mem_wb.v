@@ -56,22 +56,7 @@ module ex_mem_wb(
 	
 	assign jump_flag = 1'b0;
 	assign jump_addr = `DATA_ZERO;
-
-
-	// 需要读取MEM，在上升沿后才能获取正确写入的值
-	reg  [`REG_BUS]		mem_gprs_waddr_o;
-	reg  [`DATA_BUS]	mem_gprs_wdata_o;
 	
-	always @(posedge clk) begin
-		if (rst || !ex_valid || ex_mem_ena == `DISABLE) begin
-			mem_gprs_waddr_o <= `REG_X0;
-			mem_gprs_wdata_o <= `DATA_ZERO;
-		end
-		else begin
-			mem_gprs_waddr_o = gprs_waddr_i;
-			mem_gprs_wdata_o = mem_rdata_i;
-		end
-	end
 	
 	assign gprs_waddr_o = stall_state ? through_gprs_waddr_o : gprs_waddr_i;
 	assign gprs_wdata_o = stall_state ? through_gprs_wdata_o : mem_rdata_i;

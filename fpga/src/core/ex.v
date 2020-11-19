@@ -24,7 +24,7 @@ module ex(
 	wire [`DATA_BUS] res_sltu = src1 < src2;
 	wire [`DATA_BUS] res_xor = src1 ^ src2;
 	wire [`DATA_BUS] res_shr = src1 >> src2;
-	wire [`DATA_BUS] res_sar = $signed(src1) >> $signed(src2);
+	wire [`DATA_BUS] res_sar = $signed(src1) >> src2;
 	wire [`DATA_BUS] res_or  = src1 | src2;
 	wire [`DATA_BUS] res_and = src1 & src2;
 

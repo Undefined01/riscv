@@ -13,7 +13,11 @@ module id(
 	output reg	[`REG_BUS]	gprs_raddr1,
 	output reg	[`REG_BUS]	gprs_raddr2,
 	
-	// asynchronously to ID_EX
+	// 转发 from EX
+	input  wire [`REG_BUS]	ex_gprs_waddr,
+	input  wire [`DATA_BUS]	ex_gprs_wdata,
+	
+	// to ID_EX
 	output reg	[`RTLOP_BUS]	rtlop_o,
 	output reg	[`RTLTYPE_BUS]	rtltype_o,
 	output reg	[`DATA_BUS]		pc_o,
@@ -21,7 +25,7 @@ module id(
 	output reg	[`DATA_BUS]		src2_o,
 	output reg	[`REG_BUS]		gprs_waddr_o,
 	
-	// asynchronously to cpu_ctrl
+	// to cpu_ctrl
 	output reg	error_o
 );
 
@@ -41,16 +45,22 @@ module id(
 		rtlop_o		= `RTLOP_ADD;
 		rtltype_o	= `RTLTYPE_ARICH;
 		pc_o		= pc_i;
-		src1_o		= gprs_rdata1_i;
-		src2_o		= gprs_rdata2_i;
 		gprs_raddr1  = rs1;
 		gprs_raddr2  = rs2;
 		gprs_waddr_o = `REG_X0;
 		
+		src1_o		= gprs_rdata1_i;
+		src2_o		= gprs_rdata2_i;
+		if (ex_gprs_waddr != `REG_X0) begin
+			if (gprs_raddr1 == ex_gprs_waddr)
+				src1_o = ex_gprs_wdata;
+			if (gprs_raddr2 == ex_gprs_waddr)
+				src2_o = ex_gprs_wdata;
+		end
+		
 		case (opcode)
 			// 寄存器与立即数的算术运算
 			`INSTRGROUP_I: begin
-				src1_o = gprs_rdata1_i;
 				src2_o = I_imm;
 				gprs_waddr_o = rd;
 				
@@ -68,7 +78,6 @@ module id(
 			
 			// 寄存器与寄存器的算术运算
 			`INSTRGROUP_R: begin
-				src1_o = gprs_rdata1_i;
 				src2_o = I_imm;
 				gprs_waddr_o = rd;
 				
@@ -76,7 +85,7 @@ module id(
 				rtlop_o = {1'b0, funct3};
 				case (funct3)
 					`FUNCT3_ADD: case (funct7)
-						`FUNCT7_ADD:	src2_o = src1_o;
+						`FUNCT7_ADD:	src2_o = src2_o;
 						`FUNCT7_SUB:	src2_o = ~src2_o + 1'b1;
 						default:		error_o = 1'b1;
 					endcase

@@ -27,7 +27,11 @@ module id_ex(
 
 	always @(posedge clk)
 		if (rst || flush) begin
-			ex_valid <= 1'b0;
+			ex_valid		<= 1'b0;
+			// 设置为nop指令，防止ex模块收到错误转发
+			ex_rtlop_i		<= `RTLOP_ADD;
+			ex_rtltype_i	<= `RTLTYPE_ARICH;
+			ex_gprs_waddr_i	<= `REG_X0;
 		end
 		else if (id_valid && !stall) begin
 			ex_valid		<= id_valid;

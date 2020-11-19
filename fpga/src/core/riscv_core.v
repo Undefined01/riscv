@@ -91,19 +91,24 @@ module riscv_core(
 	wire [`RTLTYPE_BUS]	id_rtltype_o;
 	wire				id_error_o;
 	
+	// ID模块所有输入输出均为异步
 	id id(
 		// from IF
 		.instr_i(id_instr_i),
 		.pc_i(id_pc_i),
 		
-		// asynchronously from gprs
+		// from gprs
 		.gprs_rdata1_i(id_gprs_rdata1),
 		.gprs_rdata2_i(id_gprs_rdata2),
-		// asynchronously to gprs
+		// to gprs
 		.gprs_raddr1(id_gprs_raddr1),
 		.gprs_raddr2(id_gprs_raddr2),
 		
-		// asynchronously to ID_EX
+		// 转发 from EX
+		.ex_gprs_waddr(ex_gprs_waddr),
+		.ex_gprs_wdata(ex_gprs_wdata),
+		
+		// to ID_EX
 		.rtlop_o(id_rtlop_o),
 		.rtltype_o(id_rtltype_o),
 		.pc_o(id_pc_o),
@@ -111,7 +116,7 @@ module riscv_core(
 		.src2_o(id_src2_o),
 		.gprs_waddr_o(id_gprs_waddr_o),
 		
-		// asynchronously to cpu_ctrl
+		// to cpu_ctrl
 		.error_o(id_error_o)
 	);
 	
@@ -167,22 +172,22 @@ module riscv_core(
 		.src2(ex_src2_i),
 		.gprs_waddr_i(ex_gprs_waddr_i),
 		
-		// asynchronously to EX_MEM
+		// to EX_MEM
 		.mem_rw_o(ex_mem_rw_o),
 		.mem_addr_o(ex_mem_addr_o),
 		.mem_data_o(ex_mem_data_o),
 		
-		// asynchronously to EX_MEM and ID
+		// to EX_MEM and ID
 		.gprs_waddr_o(ex_gprs_waddr),
 		.gprs_wdata_o(ex_gprs_wdata),
 		
-		// asynchronously to cpu_ctrl
-//		.stall(stall),
-//		.jump_flag(jump_flag),
+		// to cpu_ctrl
+		.stall(stall),
+		.jump_flag(jump_flag),
 		.jump_addr(jump_addr)
 	);
-	assign stall = 1'b0;
-	assign jump_flag = 1'b0;
+//	assign stall = 1'b0;
+//	assign jump_flag = 1'b0;
 	
 	// EX -> MEM
 	

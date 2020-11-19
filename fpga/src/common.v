@@ -1,5 +1,8 @@
 `default_nettype none
 
+`define ENABLE			1'b1
+`define DISABLE			1'b0
+
 `define DATA_WIDTH		32
 `define DATA_BUS		`DATA_WIDTH - 1 : 0
 `define DATA_ZERO		{`DATA_WIDTH{1'b0}}

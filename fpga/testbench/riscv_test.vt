@@ -11,24 +11,22 @@ module riscv_test();
 	
 	reg [`DATA_BUS] ram[128*1024-1:0];
 	wire ram_mem_rw;
-	wire [`DATA_BUS] ram_if_addr, ram_if_data;
-	wire [`DATA_BUS] ram_mem_addr, ram_mem_data;
-	
-	reg [`DATA_BUS] reg_ram_mem_data;
-	assign ram_if_data = ram[ram_if_addr[31:2]];
-	assign ram_mem_data = ram_mem_rw == `MEM_READ ? reg_ram_mem_data : `DATA_Z;
+	wire [`DATA_BUS] ram_if_addr;
+	wire [`DATA_BUS] ram_mem_addr, ram_mem_wdata;
+	reg  [`DATA_BUS] ram_if_data, ram_mem_rdata;
 
 	always @(posedge clk) begin
+		ram_if_data <= ram[ram_if_addr[31:2]];
 		if (ram_mem_rw == `MEM_READ)
-			reg_ram_mem_data <= ram[ram_mem_addr];
+			ram_mem_rdata <= ram[ram_mem_addr[31:2]];
 		else
-			ram[ram_mem_addr] <= ram_mem_data;
+			ram[ram_mem_addr[31:2]] <= ram_mem_wdata;
 	end
 	
 	riscv_core core(
 		clk, rst,
 		ram_if_addr, ram_if_data,
-		ram_mem_rw, ram_mem_addr, ram_mem_data
+		ram_mem_rw, ram_mem_addr, ram_mem_rdata, ram_mem_wdata
 	);
 
 	// 全局状态
@@ -103,6 +101,14 @@ module riscv_test();
 		`assert(core.gprs.regs[5], 8)
 		`assert(core.gprs.regs[6], 4)
 		`assert(core.gprs.regs[7], 16)
+
+
+		reset();
+		load("ldst.hex");
+		tickn(11);
+		`assert(core.gprs.regs[2], 32'h12345678)
+		`assert(core.gprs.regs[3], 32'h12345678)
+		`assert(core.gprs.regs[4], 32'h12345678)
 
 		
 		$dumpflush;

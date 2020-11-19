@@ -7,7 +7,8 @@ module riscv_core(
 	input  wire	[`DATA_BUS]	mem_if_data,
 	output wire 			mem_mem_rw,		// MEM访存阶段对内存的操作。0读取；1写入。
 	output wire [`DATA_BUS]	mem_mem_addr,
-	inout  wire [`DATA_BUS] mem_mem_data
+	input  wire [`DATA_BUS] mem_mem_rdata,
+	output wire [`DATA_BUS] mem_mem_wdata
 );
 
 	// CPU 全局状态
@@ -31,13 +32,17 @@ module riscv_core(
 	wire [`REG_BUS]		ex_gprs_waddr;
 	wire [`DATA_BUS]	ex_gprs_wdata;
 	wire				ex_gprs_wena = ex_gprs_waddr != `REG_X0;
+	// 写回
+	wire [`REG_BUS]		wb_gprs_waddr;
+	wire [`DATA_BUS]	wb_gprs_wdata;
+	wire				wb_gprs_wena = wb_gprs_waddr != `REG_X0;
 	
 	gprs gprs (
 		.clk(clk),
 		.rst(rst),
-		.wena(ex_gprs_wena),
-		.waddr(ex_gprs_waddr),
-		.wdata(ex_gprs_wdata),
+		.wena(wb_gprs_wena),
+		.waddr(wb_gprs_waddr),
+		.wdata(wb_gprs_wdata),
 		.raddr1(id_gprs_raddr1),
 		.raddr2(id_gprs_raddr2),
 		.rdata1(id_gprs_rdata1),
@@ -67,11 +72,11 @@ module riscv_core(
 			pc <= pc_predict;
 
 	// 期望在上升沿前获取到下一条指令
-	assign mem_if_addr = pc;
+	assign mem_if_addr = stall ? if_pc : pc;
 	always @(posedge clk)
 		if (rst)
 			if_valid <= 1'b0;
-		else begin
+		else if (!stall) begin
 			if_valid <= 1'b1;
 			if_instr <= mem_if_data;
 			if_pc <= pc;
@@ -105,8 +110,8 @@ module riscv_core(
 		.gprs_raddr2(id_gprs_raddr2),
 		
 		// 转发 from EX
-		.ex_gprs_waddr(ex_gprs_waddr),
-		.ex_gprs_wdata(ex_gprs_wdata),
+		.ex_gprs_waddr(wb_gprs_waddr),
+		.ex_gprs_wdata(wb_gprs_wdata),
 		
 		// to ID_EX
 		.rtlop_o(id_rtlop_o),
@@ -159,6 +164,7 @@ module riscv_core(
 	
 	// EX 阶段
 	
+	wire				ex_mem_ena_o;
 	wire 				ex_mem_rw_o;
 	wire [`DATA_BUS]	ex_mem_addr_o;
 	wire [`DATA_BUS]	ex_mem_data_o;
@@ -173,23 +179,53 @@ module riscv_core(
 		.gprs_waddr_i(ex_gprs_waddr_i),
 		
 		// to EX_MEM
+		.mem_ena_o(ex_mem_ena_o),
 		.mem_rw_o(ex_mem_rw_o),
 		.mem_addr_o(ex_mem_addr_o),
 		.mem_data_o(ex_mem_data_o),
 		
-		// to EX_MEM and ID
+		// to EX_MEM
 		.gprs_waddr_o(ex_gprs_waddr),
-		.gprs_wdata_o(ex_gprs_wdata),
+		.gprs_wdata_o(ex_gprs_wdata)
+	);
+	
+	
+	// EX -> MEM
+	
+	// 无独立的EX_MEM和MEM模块，MEM信号交由上层模块处理。
+	// 期望在EX到MEM中间的上升沿上层MEM模块处理完毕。
+	assign mem_mem_rw = ex_mem_rw_o;
+	assign mem_mem_addr = ex_mem_addr_o;
+	assign mem_mem_wdata = ex_mem_data_o;
+	
+	ex_mem_wb ex_mem_wb(
+		.clk(clk),
+		.rst(rst),
+		
+		// from EX
+		.ex_valid(ex_valid),
+		.ex_mem_ena(ex_mem_ena_o),
+		.gprs_waddr_i(ex_gprs_waddr),
+		.gprs_wdata_i(ex_gprs_wdata),
+		
+		// from MEM
+		.mem_rw_i(mem_mem_rw),
+		.mem_rdata_i(mem_mem_rdata),
+		
+		// to GPRS
+		.gprs_waddr_o(wb_gprs_waddr),
+		.gprs_wdata_o(wb_gprs_wdata),
 		
 		// to cpu_ctrl
 		.stall(stall),
 		.jump_flag(jump_flag),
 		.jump_addr(jump_addr)
 	);
-//	assign stall = 1'b0;
-//	assign jump_flag = 1'b0;
 	
-	// EX -> MEM
+	
+	// WB
+	
+	// 无独立的WB模块，WB信号交由GPRS模块处理。
 	
 
 endmodule

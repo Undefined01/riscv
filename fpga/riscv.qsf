@@ -16,7 +16,7 @@ set_global_assignment -name VERILOG_FILE src/core/gprs.v
 set_global_assignment -name VERILOG_FILE src/core/id.v
 set_global_assignment -name VERILOG_FILE src/core/id_ex.v
 set_global_assignment -name VERILOG_FILE src/core/ex.v
-set_global_assignment -name VERILOG_FILE src/core/mem.v
+set_global_assignment -name VERILOG_FILE src/core/ex_mem_wb.v
 set_global_assignment -name VERILOG_FILE src/riscv.v
 set_global_assignment -name SDC_FILE riscv.sdc
 

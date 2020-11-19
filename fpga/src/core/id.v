@@ -37,6 +37,7 @@ module id(
 	wire [4:0] rs2 = instr_i[24:20];
 	
 	wire [`DATA_BUS] I_imm = {{20{instr_i[31]}}, instr_i[31:20]};
+	wire [`DATA_BUS] S_imm = {{20{instr_i[31]}}, instr_i[31:25], instr_i[11:7]};
 	
 	
 	
@@ -98,6 +99,31 @@ module id(
 						default:		error_o = 1'b1;
 					endcase
 				endcase
+			end
+			
+			// 从内存读取数据到寄存器
+			`INSTRGROUP_L: begin
+				// 读取地址为 rs1 + offset 处共 funct3 byte 到 rd 寄存器中
+				src2_o = I_imm;
+				gprs_waddr_o = rd;
+				
+				rtltype_o = `RTLTYPE_RMEM;
+				rtlop_o = `RTLOP_ADD;
+				
+				// TODO: 需要更多补充信息来指示读取的长度。此处默认全部为4byte
+				
+			end
+			
+			// 写入数据到内存
+			`INSTRGROUP_S: begin
+				// 将 rs2 寄存器的值写入到地址为 rs1 + offset 处共 funct3 byte
+				src1_o = src1_o + S_imm;
+				
+				rtltype_o = `RTLTYPE_WMEM;
+				rtlop_o = `RTLOP_ADD;
+				
+				// TODO: 需要更多补充信息来指示读取的长度。此处默认全部为4byte
+				
 			end
 			
 			default: begin

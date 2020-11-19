@@ -9,17 +9,13 @@ module ex(
 	input  wire	[`DATA_BUS]		src2,
 	input  wire	[`REG_BUS]		gprs_waddr_i,
 	
-	// asynchronously to EX_MEM and ID
+	// asynchronously to EX_MEM_WB
+	output reg					mem_ena_o,
 	output reg					mem_rw_o,
 	output reg	[`DATA_BUS]		mem_addr_o,
 	output reg	[`DATA_BUS]		mem_data_o,
 	output reg	[`REG_BUS]		gprs_waddr_o,
-	output reg	[`DATA_BUS]		gprs_wdata_o,
-	
-	// asynchronously to cpu_ctrl
-	output wire					stall,
-	output wire					jump_flag,
-	output wire	[`DATA_BUS]		jump_addr
+	output reg	[`DATA_BUS]		gprs_wdata_o
 );
 
 	wire [`DATA_BUS] res_add = src1 + src2;
@@ -34,9 +30,6 @@ module ex(
 
 	reg [`DATA_BUS] res;
 	
-	assign stall = 1'b0;
-	assign jump_flag = 1'b0;
-	assign jump_addr = `DATA_ZERO;
 
 	always @(*) begin
 		case (rtlop)
@@ -54,6 +47,7 @@ module ex(
 	end
 	
 	always @(*) begin
+		mem_ena_o = `DISABLE;
 		mem_rw_o = `MEM_READ;
 		mem_addr_o = `DATA_ZERO;
 		mem_data_o = `DATA_ZERO;
@@ -62,8 +56,23 @@ module ex(
 		
 		case (rtltype)
 			`RTLTYPE_ARICH: begin
-				gprs_waddr_o <= gprs_waddr_i;
+				gprs_waddr_o = gprs_waddr_i;
 			end
+			
+			`RTLTYPE_RMEM: begin
+				gprs_waddr_o = gprs_waddr_i;
+				mem_ena_o	 = `ENABLE;
+				mem_rw_o	 = `MEM_READ;
+				mem_addr_o	 = res;
+			end
+			
+			`RTLTYPE_WMEM: begin
+				mem_ena_o	= `ENABLE;
+				mem_rw_o	= `MEM_WRITE;
+				mem_addr_o	= src1;
+				mem_data_o	= src2;
+			end
+			
 			default: begin
 				gprs_waddr_o <= `REG_X0;
 			end

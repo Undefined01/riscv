@@ -2,6 +2,7 @@ db/
 incremental_db/
 output_files/
 simulation/
+testbench/build/
 *.bak
 riscv.qws
 riscv_nativelink_simulation.rpt

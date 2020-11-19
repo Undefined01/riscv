@@ -16,9 +16,12 @@ module gprs(
 
 	reg [`DATA_BUS] regs[`REG_COUNT - 1 : 0];
 
+	integer i;
 	always @(posedge clk)
-		if (rst)
-			regs[0] <= `DATA_ZERO;
+		if (rst) begin
+			for (i=0; i<`REG_COUNT; i=i+1)
+				regs[i] <= `DATA_ZERO;
+		end
 		else if (wena && waddr != `REG_X0)
 			regs[waddr] <= wdata;
 	

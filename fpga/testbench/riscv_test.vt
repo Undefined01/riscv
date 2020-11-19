@@ -1,6 +1,8 @@
 `timescale 1 ps/ 1 ps
 `include "../src/common.v"
 
+`define TESTBENCH_PWD "E:/test/riscv/fpga/testbench/"
+
 module riscv_test();
 
 	reg clk = 1'b0;
@@ -55,6 +57,12 @@ module riscv_test();
 			ram[i] = 0;
 	end
 	endtask
+
+	task load(input reg [256*8:1] hexfile);
+	begin
+		$readmemh({`TESTBENCH_PWD, "/build/", hexfile}, ram);
+	end
+	endtask
 	
 	
 	// 测试集
@@ -66,21 +74,16 @@ module riscv_test();
 		$dumpvars(1, core);
 		$dumpvars(0, core.gprs.regs);
 	
-			
-		ram[0] = 32'h14400093;	//  addi x0, A20, x1
-		ram[1] = 32'h14408093;	//  addi x1, A20, x1
-		ram[2] = 32'h14408093;	//  addi x1, A20, x1
-		ram[3] = 32'h14408093;	//  addi x1, A20, x1
+		reset();
+		load("add.hex");
+		tickn(10);
+
 		
-		ram[4] = 32'h00000013;	//  addi x0, 0, x0
-		
-		$dumpon;
-		
-		
+		reset();
+		load("add.hex");
 		tickn(10);
 		
 		
-		$dumpoff;
 		$dumpflush;
 		$display("All test finished");
 	end

@@ -78,7 +78,6 @@ module id(
 			
 			// 寄存器与寄存器的算术运算
 			`INSTRGROUP_R: begin
-				src2_o = I_imm;
 				gprs_waddr_o = rd;
 				
 				rtltype_o = `RTLTYPE_ARICH;

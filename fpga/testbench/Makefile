@@ -1,33 +1,53 @@
-toolchain := riscv64-unknown-elf-
-build_dir := build
+.DEFAULT_GOAL := all
 
+toolchain := riscv64-unknown-elf-
+AS := ${toolchain}as
+LD := ${toolchain}ld
+OBJCOPY := ${toolchain}objcopy
+OBJDUMP := ${toolchain}objdump
+
+src_dir := src
+build_dir := build
+utils_dir := utils
+
+
+UTILS := bin2hexfile
 SRCS := $(wildcard src/*.s)
+
+utils_src   := $(addprefix ${utils_dir}/,${UTILS})
+utils_build := $(addprefix ${build_dir}/,${UTILS})
+
 HEXS := $(patsubst src/%,${build_dir}/%,${SRCS})
 HEXS := $(patsubst %.s,%.hex,${HEXS})
 
-.PHONY: all clean
-.DEFAULTGOAL: all
+.PHONY: all clean make_build_dir
+
+$(info ${utils_build})
+
+${utils_build}:${build_dir}/%:${utils_dir}/%.c
+	@echo + CC $@
+	gcc -o $@ $<
 
 ${build_dir}/%.o:src/%.s
 	@echo + AS $@
-	@mkdir -p ${build_dir}
-	@${toolchain}as -o $@ -I src $<
+	@${AS} -o $@ -I src $<
 
 %.elf:%.o
-	@${toolchain}ld -T src/section.ld -o $@ $<
+	@${LD} -T src/section.ld -o $@ $<
 
 %.bin:%.elf
-	@${toolchain}objcopy --strip-all $^ -O binary $@
+	@${OBJCOPY} --strip-all $^ -O binary $@
 
 %.hex:%.bin
 	@echo + HEX $@
-	@utils/bin2hexfile $^ $@
-# %.hex:%.o
-# 	@echo + HEX $@
-# 	@${toolchain}objdump -d $^ | grep -E '\w+:'$$'\t' \
-# 		| awk '{printf("@%x\t%s\n", strtonum("0x" substr($$1, 0, length($$1)-1))/4, $$2)}' > $@
+	@${build_dir}/bin2hexfile $^ $@
 
-all: $(HEXS) $(HEXS:.hex=.elf)
+make_build_dir:
+	@mkdir -p ${build_dir}
+
+all: make_build_dir \
+	$(utils_build) \
+	$(HEXS) $(HEXS:.hex=.elf)
 
 clean:
 	rm -r ${build_dir}

@@ -11,17 +11,17 @@ HEXS := $(patsubst %.s,%.hex,${HEXS})
 ${build_dir}/%.o:src/%.s
 	@echo + AS $@
 	@mkdir -p ${build_dir}
-	@${toolchain}as $^ -o $@
+	@${toolchain}as -o $@ -I src $<
 
 %.elf:%.o
-	@${toolchain}ld -T src/section.ld $^ -o $@
+	@${toolchain}ld -T src/section.ld -o $@ $<
 
 %.bin:%.elf
 	@${toolchain}objcopy --strip-all $^ -O binary $@
 
 %.hex:%.bin
 	@echo + HEX $@
-	utils/bin2hexfile $^ $@
+	@utils/bin2hexfile $^ $@
 # %.hex:%.o
 # 	@echo + HEX $@
 # 	@${toolchain}objdump -d $^ | grep -E '\w+:'$$'\t' \

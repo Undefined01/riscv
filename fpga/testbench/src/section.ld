@@ -1,10 +1,11 @@
 ENTRY(_start)
 
 SECTIONS {
-	. = 0;
+	. = 0x00000000;
 	.text : {
 		*(entry)
 		*(.text*)
+		*(text_end)
 	}
 	etext = .;
 	_etext = .;

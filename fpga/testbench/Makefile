@@ -30,7 +30,7 @@ ${utils_build}:${build_dir}/%:${utils_dir}/%.c
 
 ${build_dir}/%.o:src/%.s
 	@echo + AS $@
-	@${AS} -o $@ -I src $<
+	@${AS} -march=rv32i -o $@ -I src $<
 
 %.elf:%.o
 	@${LD} -T src/section.ld -o $@ $<

@@ -1,0 +1,4 @@
+vga_ctl模块在VGA_CLK上升沿后epsilon时间给出下一个像素点的addr，并要求在下一个上升沿之前准备好vga_data
+这段时间相当于两个50M时钟的周期
+因此设计在一个周期内完成charidx的准备，并在下一个周期通过charidx取出对应terminal的char和char对应的行。
+具体而言，第一个周期的上升沿，haddr和vaddr更新。第一个周期的下降沿，用haddr和vaddr更新charidx。第二个周期的上升沿，根据主模块中的Terminal RAM读出charidx对应的字符。第二个周期的下降沿，VGA terminal根据字符读出字体在row行的像素数据。

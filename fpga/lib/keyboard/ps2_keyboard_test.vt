@@ -1,0 +1,64 @@
+`timescale 1ns / 1ps
+module ps2_keyboard_test();
+
+	/* parameter */
+	parameter [31:0] clock_period = 10;
+
+	/* ps2_keyboard interface signals */
+	reg clk, clr_;
+	wire [7:0] data;
+	wire ready, overflow;
+	wire kbd_clk, kbd_data;
+	reg nextdata_;
+
+	ps2_keyboard_model model (
+		.ps2_clk(kbd_clk),
+		.ps2_data(kbd_data)
+	);
+
+	ps2_keyboard ps2_keyboard (
+		.clk(clk),
+		.clr_(clr_),
+		.ps2_clk(kbd_clk),
+		.ps2_data(kbd_data),
+		.data(data),
+		.ready(ready),
+		.nextdata_(nextdata_),
+		.overflow(overflow)
+	);
+
+	initial begin /* clock driver */
+		clk = 0;
+		forever #(clock_period/2)
+			clk = ~clk;
+	end
+
+	initial begin
+		clr_ = 1'b0; #20;
+		clr_ = 1'b1; #20;
+		model.kbd_sendcode(8'h1C); // press 'A'
+		#20 nextdata_ =1'b0; #20 nextdata_ =1'b1; //read data
+		model.kbd_sendcode(8'hF0); // break code
+		#20 nextdata_ =1'b0; #20 nextdata_ =1'b1; //read data
+		model.kbd_sendcode(8'h1C); // release 'A'
+		#20 nextdata_ =1'b0; #20 nextdata_ =1'b1; //read data
+		model.kbd_sendcode(8'h1B); // press 'S'
+		#20 model.kbd_sendcode(8'h1B); // keep pressing 'S'
+		#20 model.kbd_sendcode(8'h1B); // keep pressing 'S'
+		#20 model.kbd_sendcode(8'h55); // new
+		model.kbd_sendcode(8'hF0); // break code
+		model.kbd_sendcode(8'h1B); // release 'S'
+		#20;
+		#(clock_period) nextdata_ =1'b0; #(clock_period) nextdata_ =1'b1; //read data
+		#(clock_period) nextdata_ =1'b0; #(clock_period) nextdata_ =1'b1; //read data
+		#(clock_period) nextdata_ =1'b0; #(clock_period) nextdata_ =1'b1; //read data
+		#(clock_period) nextdata_ =1'b0; #(clock_period) nextdata_ =1'b1; //read data
+		#(clock_period) nextdata_ =1'b0; #(clock_period) nextdata_ =1'b1; //read data
+		#(clock_period) nextdata_ =1'b0; #(clock_period) nextdata_ =1'b1; //read data
+		
+		model.kbd_sendcode(8'h77); // break code
+		
+		$stop;
+	end
+
+endmodule

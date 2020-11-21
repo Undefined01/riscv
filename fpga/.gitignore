@@ -6,3 +6,4 @@ testbench/build/
 *.bak
 riscv.qws
 riscv_nativelink_simulation.rpt
+c5_pin_model_dump.txt

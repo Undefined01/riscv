@@ -101,6 +101,13 @@ module riscv_test();
 		`assert(core.gprs.regs[5], 8)
 		`assert(core.gprs.regs[6], 4)
 		`assert(core.gprs.regs[7], 16)
+	
+		reset();
+		load("lui.hex");
+		tickn(12);
+		`assert(core.gprs.regs[1], 32'ha0000000)
+		`assert(core.gprs.regs[2], 32'ha0000001)
+		`assert(core.gprs.regs[3], 32'ha0000002)
 
 
 		reset();

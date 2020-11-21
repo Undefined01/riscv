@@ -11,6 +11,13 @@ set_global_assignment -name DEVICE_FILTER_PIN_COUNT 896
 set_global_assignment -name DEVICE_FILTER_SPEED_GRADE 6
 set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 
+
+set_global_assignment -name SEARCH_PATH src/lib
+set_global_assignment -name VERILOG_FILE src/lib/clk_div/clk_div.v
+set_global_assignment -name VERILOG_FILE src/lib/7segment/seg.v
+set_global_assignment -name VERILOG_FILE src/lib/counter/counter.v
+set_global_assignment -name VERILOG_FILE src/lib/vga_term/vga_term.v
+
 set_global_assignment -name VERILOG_FILE src/core/riscv_core.v
 set_global_assignment -name VERILOG_FILE src/core/gprs.v
 set_global_assignment -name VERILOG_FILE src/core/id.v

@@ -38,6 +38,7 @@ module id(
 	
 	wire [`DATA_BUS] I_imm = {{20{instr_i[31]}}, instr_i[31:20]};
 	wire [`DATA_BUS] S_imm = {{20{instr_i[31]}}, instr_i[31:25], instr_i[11:7]};
+	wire [`DATA_BUS] U_imm = {instr_i[31:12], {12{1'b0}}};
 	
 	
 	
@@ -124,6 +125,16 @@ module id(
 				
 				// TODO: 需要更多补充信息来指示读取的长度。此处默认全部为4byte
 				
+			end
+			
+			// LUI
+			`INSTR_LUI: begin
+				src1_o = U_imm;
+				src2_o = `DATA_ZERO;
+				gprs_waddr_o = rd;
+				
+				rtltype_o = `RTLTYPE_ARICH;
+				rtlop_o = `RTLOP_ADD;
 			end
 			
 			default: begin

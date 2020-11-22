@@ -31,7 +31,7 @@ module riscv_test();
 
 	// 全局状态
 	// 当前测试的名称
-	reg [256*8:1] testname;
+	reg [30*8-1:0] testname;
 
 	// 辅助函数
 	task tick();
@@ -43,7 +43,7 @@ module riscv_test();
 	task tickn(input integer n);
 		integer i;
 	begin
-		for (i = 0; i < n; i=i+1)
+		for (i = 0; i < n; i = i + 1)
 			tick();
 	end
 	endtask
@@ -60,9 +60,29 @@ module riscv_test();
 	end
 	endtask
 
-	task load(input reg [256*8:1] hexfile);
+	task load(input reg [30*8-1:0] hexfile);
 	begin
 		$readmemh({`TESTBENCH_PWD, "/build/", hexfile}, ram);
+		testname = hexfile;
+	end
+	endtask
+
+	task run();
+		integer i;
+	begin
+		for (i = 0; i < 100000; i = i + 1) begin
+			tick();
+			if (core.if_instr == 32'h7f2a214b) begin
+				$display("%s terminated after %d steps", testname, i);
+				disable run;
+			end
+			if (core.id_valid && core.id_error_o) begin
+				$display("In %s:", testname);
+				$display("Invalid instrction at %x", core.id_pc_i);
+				$stop;
+			end
+		end
+		$display("Warning: Program %s does not terminated within 100000 steps", testname);
 	end
 	endtask
 
@@ -82,22 +102,24 @@ module riscv_test();
 		$dumpvars(1, core);
 		$dumpvars(0, core.gprs.regs);
 
+		$display("Start testing");
+
 		reset();
 		load("add.hex");
-		tickn(12);
+		run();
 		`assert(core.gprs.regs[2], 144)
 		`assert(core.gprs.regs[3], 102)
 
 
 		reset();
 		load("fib10.hex");
-		tickn(35);
+		run();
 		`assert(core.gprs.regs[2], 89)
 
 
 		reset();
 		load("arich.hex");
-		tickn(16);
+		run();
 		`assert(core.gprs.regs[5], 8)
 		`assert(core.gprs.regs[6], 4)
 		`assert(core.gprs.regs[7], 16)
@@ -105,7 +127,7 @@ module riscv_test();
 
 		reset();
 		load("lui.hex");
-		tickn(12);
+		run();
 		`assert(core.gprs.regs[1], 32'ha0000000)
 		`assert(core.gprs.regs[2], 32'ha0000001)
 		`assert(core.gprs.regs[3], 32'ha0000002)
@@ -113,7 +135,7 @@ module riscv_test();
 
 		reset();
 		load("ldst.hex");
-		tickn(11);
+		run();
 		`assert(core.gprs.regs[2], 32'h12345678)
 		`assert(core.gprs.regs[3], 32'h12345678)
 		`assert(core.gprs.regs[4], 32'h12345678)
@@ -121,7 +143,7 @@ module riscv_test();
 
 		reset();
 		load("jump.hex");
-		tickn(11);
+		run();
 		`assert(core.gprs.regs[1], 21)
 		`assert(core.gprs.regs[2], 8)
 		`assert(core.gprs.regs[3], 0)
@@ -133,7 +155,7 @@ module riscv_test();
 
 		reset();
 		load("branch.hex");
-		tickn(15);
+		run();
 		`assert(core.gprs.regs[1], 1)
 		`assert(core.gprs.regs[2], -3)
 		`assert(core.gprs.regs[5], 11)

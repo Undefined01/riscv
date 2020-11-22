@@ -62,12 +62,15 @@
 
 // 条件跳转
 `define INSTRGROUP_B	7'b1100011
-`define INSTR_BEQ		3'b000
-`define INSTR_BNE		3'b001
-`define INSTR_BLT		3'b100
-`define INSTR_BGE		3'b101
-`define INSTR_BLTU		3'b110
-`define INSTR_BGEU		3'b111
+`define FUNCT3_BEQ		3'b000
+`define FUNCT3_BNE		3'b001
+`define FUNCT3_BLT		3'b100
+`define FUNCT3_BGE		3'b101
+`define FUNCT3_BLTU		3'b110
+`define FUNCT3_BGEU		3'b111
+`define FUNCT2_BEQ		2'b00
+`define FUNCT2_BLT		2'b10
+`define FUNCT2_BLTU		2'b11
 
 
 // RTL

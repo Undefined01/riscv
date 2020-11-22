@@ -42,6 +42,15 @@ module id(
 	wire [`DATA_BUS] U_imm = {instr_i[31:12], {12{1'b0}}};
 	wire [`DATA_BUS] J_imm = {{12{instr_i[31]}}, instr_i[19:12], instr_i[20], instr_i[30:21], 1'b0};
 	
+	reg  [`DATA_BUS] reg_src1, reg_src2;
+	
+	// 分支指令
+	wire b_eq = reg_src1 == reg_src2;
+	wire b_lt = $signed(reg_src1) < $signed(reg_src2);
+	wire b_ltu = reg_src1 < reg_src2;
+	wire [1:0] b_funct2 = funct3[2:1];
+	wire b_cmp_res = b_funct2 == `FUNCT2_BEQ ? b_eq : b_funct2 == `FUNCT2_BLT ? b_lt : b_ltu;
+	wire b_res = b_cmp_res ^ funct3[0];
 	
 	
 	always @(*) begin
@@ -53,14 +62,17 @@ module id(
 		gprs_raddr2  = rs2;
 		gprs_waddr_o = `REG_X0;
 		
-		src1_o		= gprs_rdata1_i;
-		src2_o		= gprs_rdata2_i;
+		// 接收转发的寄存器值
+		reg_src1	= gprs_rdata1_i;
+		reg_src2	= gprs_rdata2_i;
 		if (ex_gprs_waddr != `REG_X0) begin
 			if (gprs_raddr1 == ex_gprs_waddr)
-				src1_o = ex_gprs_wdata;
+				reg_src1 = ex_gprs_wdata;
 			if (gprs_raddr2 == ex_gprs_waddr)
-				src2_o = ex_gprs_wdata;
+				reg_src2 = ex_gprs_wdata;
 		end
+		src1_o		= reg_src1;
+		src2_o		= reg_src2;
 		
 		case (opcode)
 			// 寄存器与立即数的算术运算
@@ -131,7 +143,7 @@ module id(
 			
 			// 相对PC跳转
 			`INSTR_JAL: begin
-				// 根据标准，相对于 pc 进行跳转
+				// 相对于 pc 进行跳转
 				src1_o = pc_i;
 				src2_o = J_imm;
 				gprs_waddr_o = rd;
@@ -142,10 +154,22 @@ module id(
 			
 			// 间接跳转
 			`INSTR_JALR: begin
+				// 相对于 rs1 进行跳转
 				src2_o = I_imm;
 				gprs_waddr_o = rd;
 				
 				rtltype_o = `RTLTYPE_JUMP;
+				rtlop_o = `RTLOP_ADD;
+			end
+			
+			// 分支指令
+			`INSTRGROUP_B: begin
+				// 相对于 pc 进行跳转
+				src1_o = pc_i;
+				src2_o = B_imm;
+				
+				// 如果条件不成立，退化成空指令
+				rtltype_o = b_res ? `RTLTYPE_JUMP : `RTLTYPE_ARICH;
 				rtlop_o = `RTLOP_ADD;
 			end
 			

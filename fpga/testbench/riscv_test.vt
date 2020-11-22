@@ -131,6 +131,14 @@ module riscv_test();
 		`assert(core.gprs.regs[7], 0)
 
 
+		reset();
+		load("branch.hex");
+		tickn(15);
+		`assert(core.gprs.regs[1], 1)
+		`assert(core.gprs.regs[2], -3)
+		`assert(core.gprs.regs[5], 11)
+
+
 		$dumpflush;
 		$display("All test finished");
 	end

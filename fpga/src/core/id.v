@@ -173,10 +173,20 @@ module id(
 				rtlop_o = `RTLOP_ADD;
 			end
 			
-			// 加载立即数到寄存器高位中
+			// 加载立即数到寄存器的高位中
 			`INSTR_LUI: begin
 				src1_o = U_imm;
 				src2_o = `DATA_ZERO;
+				gprs_waddr_o = rd;
+				
+				rtltype_o = `RTLTYPE_ARICH;
+				rtlop_o = `RTLOP_ADD;
+			end
+			
+			// 将 pc + offset 赋值给寄存器
+			`INSTR_AUIPC: begin
+				src1_o = pc_i;
+				src2_o = U_imm;
 				gprs_waddr_o = rd;
 				
 				rtltype_o = `RTLTYPE_ARICH;

@@ -83,7 +83,7 @@ module ex(
 				jump_addr = res;
 				// 写回到寄存器中的地址为jump下一条指令
 				gprs_waddr_o = gprs_waddr_i;
-				gprs_wdata_o = src1 + 4;
+				gprs_wdata_o = pc + 4;
 			end
 			
 			default: begin

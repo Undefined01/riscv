@@ -122,8 +122,13 @@ module riscv_test();
 		reset();
 		load("jump.hex");
 		tickn(11);
-		`assert(core.gprs.regs[1], 11)
+		`assert(core.gprs.regs[1], 21)
 		`assert(core.gprs.regs[2], 8)
+		`assert(core.gprs.regs[3], 0)
+		`assert(core.gprs.regs[4], 32'h1c)
+		`assert(core.gprs.regs[5], 0)
+		`assert(core.gprs.regs[6], 0)
+		`assert(core.gprs.regs[7], 0)
 
 
 		$dumpflush;

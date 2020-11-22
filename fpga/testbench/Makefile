@@ -13,12 +13,12 @@ build_dir := build
 utils_dir := utils
 
 UTILS := bin2hexfile
-SRCS := $(wildcard src/*.s)
+SRCS := $(wildcard ${src_dir}/*.s)
 
 utils_src   := $(addprefix ${utils_dir}/,${UTILS})
 utils_build := $(addprefix ${build_dir}/,${UTILS})
 
-HEXS := $(patsubst src/%,${build_dir}/%,${SRCS})
+HEXS := $(patsubst ${src_dir}/%,${build_dir}/%,${SRCS})
 HEXS := $(patsubst %.s,%.hex,${HEXS})
 
 
@@ -27,12 +27,12 @@ ${utils_build}:${build_dir}/%:${utils_dir}/%.c
 	@echo + CC $@
 	@gcc -o $@ $<
 
-${build_dir}/%.o:src/%.s
+${build_dir}/%.o:${src_dir}/%.s ${src_dir}/common.h
 	@echo + AS $@
 	@${AS} -march=rv32i -o $@ -I src $<
 
-%.elf:%.o
-	@${LD} -T src/section.ld -o $@ $<
+%.elf:%.o ${src_dir}/section.ld
+	@${LD} -T ${src_dir}/section.ld -o $@ $<
 
 %.bin:%.elf
 	@${OBJCOPY} --strip-all $^ -O binary $@

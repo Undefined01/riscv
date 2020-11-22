@@ -51,33 +51,36 @@ module riscv_core(
 	
 	// IF阶段
 	
-	reg  [`DATA_BUS] pc, if_pc;
+	reg  [`DATA_BUS] pc, next_pc;
 	wire [`DATA_BUS] pc_predict;
 	
 	reg  if_valid;
-	reg  [`DATA_BUS] if_instr;
+	reg  [`DATA_BUS] if_pc;
+	wire [`DATA_BUS] if_instr = mem_if_data;
 	
 	// 进行分支预测。此处总是预测不跳转（顺序执行）
 	assign pc_predict = pc + 4;
 	
-	always @(posedge clk)
+	always @(*)
 		if (rst)
-			pc <= `CPU_RESET_ADDR;
+			next_pc = `CPU_RESET_ADDR;
 		else if (stall)
-			pc <= pc;
+			next_pc = pc;
 		else if (jump_flag) 
-			pc <= jump_addr;
+			next_pc = jump_addr + 4;
 		else 
-			pc <= pc_predict;
+			next_pc = pc_predict;
+			
+	always @(posedge clk)
+		pc <= next_pc;
 
 	// 期望在上升沿前获取到下一条指令
-	assign mem_if_addr = stall ? if_pc : pc;
+	assign mem_if_addr = flush ? jump_addr : stall ? if_pc : pc;
 	always @(posedge clk)
 		if (rst)
 			if_valid <= 1'b0;
 		else if (!stall) begin
 			if_valid <= 1'b1;
-			if_instr <= mem_if_data;
 			if_pc <= pc;
 		end
 	
@@ -185,7 +188,11 @@ module riscv_core(
 		
 		// to EX_MEM
 		.gprs_waddr_o(ex_gprs_waddr),
-		.gprs_wdata_o(ex_gprs_wdata)
+		.gprs_wdata_o(ex_gprs_wdata),
+		
+		// to cpu_ctrl
+		.jump_flag(jump_flag),
+		.jump_addr(jump_addr)
 	);
 	
 	
@@ -216,9 +223,7 @@ module riscv_core(
 		.gprs_wdata_o(wb_gprs_wdata),
 		
 		// to cpu_ctrl
-		.stall(stall),
-		.jump_flag(jump_flag),
-		.jump_addr(jump_addr)
+		.stall(stall)
 	);
 	
 	

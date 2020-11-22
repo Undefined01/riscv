@@ -68,7 +68,7 @@ module riscv_test();
 
 	`define assert(signal, value) \
         if (signal !== value) begin \
-            $display("ASSERTION FAILED in %m: signal != value"); \
+            $display("ASSERTION FAILED in %m: expect %x, got %x", value, signal); \
             $stop; \
         end
 
@@ -81,19 +81,19 @@ module riscv_test();
 		$dumpfile("coredump.vcd");
 		$dumpvars(1, core);
 		$dumpvars(0, core.gprs.regs);
-	
+
 		reset();
 		load("add.hex");
 		tickn(12);
 		`assert(core.gprs.regs[2], 144)
 		`assert(core.gprs.regs[3], 102)
 
-		
+
 		reset();
 		load("fib10.hex");
 		tickn(35);
 		`assert(core.gprs.regs[2], 89)
-		
+
 
 		reset();
 		load("arich.hex");
@@ -101,7 +101,8 @@ module riscv_test();
 		`assert(core.gprs.regs[5], 8)
 		`assert(core.gprs.regs[6], 4)
 		`assert(core.gprs.regs[7], 16)
-	
+
+
 		reset();
 		load("lui.hex");
 		tickn(12);
@@ -117,7 +118,14 @@ module riscv_test();
 		`assert(core.gprs.regs[3], 32'h12345678)
 		`assert(core.gprs.regs[4], 32'h12345678)
 
-		
+
+		reset();
+		load("jump.hex");
+		tickn(11);
+		`assert(core.gprs.regs[1], 11)
+		`assert(core.gprs.regs[2], 8)
+
+
 		$dumpflush;
 		$display("All test finished");
 	end

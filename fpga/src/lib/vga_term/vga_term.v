@@ -49,7 +49,7 @@ module vga_term #(
 	reg h_invalid;
 	reg [3:0] col, row;		// 正在发送当前字符的row行，col列
 	reg [6:0] char_col;		// 当前发送字符在term的col列
-	reg [15:0] base;		// 当前发送行首字符为第base个
+	reg [11:0] base;		// 当前发送行首字符为第base个
 	always @(posedge clk_25M or posedge rst)
 		if (rst) begin
 			h_invalid <= 1'b0;

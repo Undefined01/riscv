@@ -63,16 +63,16 @@ module riscv(
 	initial $readmemh("E:/test/riscv/fpga/testbench/build/test_perip.hex", ram);
 	
 	always @(posedge clk) begin
-		ram_if_data <= ram[ram_if_addr[31:2]];
 		if (ram_ena) begin
 			if (ram_mem_rw == `MEM_READ)
 				ram_mem_rdata <= ram[ram_mem_addr[31:2]];
 			else
 				ram[ram_mem_addr[31:2]] <= ram_mem_wdata;
 		end
+		ram_if_data <= ram[ram_if_addr[31:2]];
 	end
 	riscv_core core(
-		~KEY[3], rst,
+		CLOCK_50, rst,
 		ram_if_addr, ram_if_data,
 		mem_rw, mem_addr, mem_rdata, mem_wdata
 	);
@@ -83,9 +83,9 @@ module riscv(
 	wire [11:0] charidx;
 	reg [7:0] char;
 	always @(posedge CLOCK_50) begin
-		char <= term[charidx];
 		if (term_ena)
 			term[term_waddr] <= term_wdata[7:0];
+		char <= term[charidx];
 	end
 	
 	clk_div #(2) clk_div_25M (CLOCK_50, 1'b1, rst, VGA_CLK);

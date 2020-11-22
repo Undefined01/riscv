@@ -15,7 +15,10 @@ module ex(
 	output reg	[`DATA_BUS]		mem_addr_o,
 	output reg	[`DATA_BUS]		mem_data_o,
 	output reg	[`REG_BUS]		gprs_waddr_o,
-	output reg	[`DATA_BUS]		gprs_wdata_o
+	output reg	[`DATA_BUS]		gprs_wdata_o,
+	
+	output reg					jump_flag,
+	output reg	[`DATA_BUS]		jump_addr
 );
 
 	wire [`DATA_BUS] res_add = src1 + src2;
@@ -53,6 +56,8 @@ module ex(
 		mem_data_o = `DATA_ZERO;
 		gprs_waddr_o = `REG_X0;
 		gprs_wdata_o = res;
+		jump_flag = `DISABLE;
+		jump_addr = `DATA_ZERO;
 		
 		case (rtltype)
 			`RTLTYPE_ARICH: begin
@@ -71,6 +76,14 @@ module ex(
 				mem_rw_o	= `MEM_WRITE;
 				mem_addr_o	= src1;
 				mem_data_o	= src2;
+			end
+			
+			`RTLTYPE_JUMP: begin
+				jump_flag = `ENABLE;
+				jump_addr = res;
+				// 写回到寄存器中的地址为jump下一条指令
+				gprs_waddr_o = gprs_waddr_i;
+				gprs_wdata_o = src1 + 4;
 			end
 			
 			default: begin

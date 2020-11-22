@@ -23,9 +23,7 @@ module ex_mem_wb(
 	output wire	[`DATA_BUS]		gprs_wdata_o,
 	
 	// asynchronously to cpu_ctrl
-	output wire					stall,
-	output wire					jump_flag,
-	output wire	[`DATA_BUS]		jump_addr
+	output wire					stall
 );
 
 	// EX已经计算出最终结果，跳过MEM阶段立即执行写寄存器。
@@ -53,9 +51,6 @@ module ex_mem_wb(
 			stall_state <= 1'b1;
 	
 	assign stall = comb_stall & stall_state;
-	
-	assign jump_flag = 1'b0;
-	assign jump_addr = `DATA_ZERO;
 	
 	
 	assign gprs_waddr_o = stall_state ? through_gprs_waddr_o : gprs_waddr_i;

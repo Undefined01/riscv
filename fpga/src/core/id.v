@@ -38,7 +38,9 @@ module id(
 	
 	wire [`DATA_BUS] I_imm = {{20{instr_i[31]}}, instr_i[31:20]};
 	wire [`DATA_BUS] S_imm = {{20{instr_i[31]}}, instr_i[31:25], instr_i[11:7]};
+	wire [`DATA_BUS] B_imm = {{20{instr_i[31]}}, instr_i[7], instr_i[30:25], instr_i[11:8], 1'b0};
 	wire [`DATA_BUS] U_imm = {instr_i[31:12], {12{1'b0}}};
+	wire [`DATA_BUS] J_imm = {{12{instr_i[31]}}, instr_i[19:12], instr_i[20], instr_i[30:21], 1'b0};
 	
 	
 	
@@ -127,7 +129,27 @@ module id(
 				
 			end
 			
-			// LUI
+			// 相对PC跳转
+			`INSTR_JAL: begin
+				// 根据标准，相对于 pc 进行跳转
+				src1_o = pc_i;
+				src2_o = J_imm;
+				gprs_waddr_o = rd;
+				
+				rtltype_o = `RTLTYPE_JUMP;
+				rtlop_o = `RTLOP_ADD;
+			end
+			
+			// 间接跳转
+			`INSTR_JALR: begin
+				src2_o = I_imm;
+				gprs_waddr_o = rd;
+				
+				rtltype_o = `RTLTYPE_JUMP;
+				rtlop_o = `RTLOP_ADD;
+			end
+			
+			// 加载立即数到寄存器高位中
 			`INSTR_LUI: begin
 				src1_o = U_imm;
 				src2_o = `DATA_ZERO;

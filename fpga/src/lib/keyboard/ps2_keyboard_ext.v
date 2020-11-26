@@ -1,23 +1,23 @@
 `include "scancode.h"
 
 module ps2_keyboard(
-	input clk,
-	input clr_n,
-	input ps2_clk,
-	input ps2_data,
-	input nextdata_n,
-	output keyup,
-	output extend,
-	output [7:0] scancode,
-	output reg ready,
-	output reg overflow
+	input  wire	clk,
+	input  wire	rst,
+	input  wire	ps2_clk,
+	input  wire	ps2_data,
+	input  wire	nextdata_n,
+	output wire	keyup,
+	output wire	extend,
+	output wire	[7:0] scancode,
+	output reg	ready,
+	output reg	overflow
 );
 
 	reg [9:0] fifo[7:0];
 	reg [2:0] w_ptr, r_ptr;
 	
 	wire sampling;
-	get_negedge ps2_negedge (clk, clr_n, ps2_clk, sampling);
+	get_negedge ps2_negedge (clk, rst, ps2_clk, sampling);
 	
 	reg [3:0] count;
 	reg [9:0] buffer;
@@ -26,8 +26,8 @@ module ps2_keyboard(
 	
 	reg last_keyup, last_extend;
 	reg [7:0] last_scancode;
-	always @(posedge clk or negedge clr_n) begin
-		if (!clr_n) begin
+	always @(posedge clk or posedge rst) begin
+		if (rst) begin
 			w_ptr <= 3'b0;
 			r_ptr <= 3'b0;
 			ready <= 1'b0;

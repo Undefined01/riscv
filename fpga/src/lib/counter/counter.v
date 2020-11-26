@@ -9,8 +9,8 @@ module counter #(
 	output carry
 );
 
-	wire [31:0] w_zero  = 0;
-	wire [31:0] w_bound = bound;
+	wire [63:0] w_zero  = 0;
+	wire [63:0] w_bound = bound;
 
 	assign carry = ena && (num == w_bound[width-1:0]);
 

@@ -132,7 +132,7 @@ module id(
 			// 写入数据到内存
 			`INSTRGROUP_S: begin
 				// 将 rs2 寄存器的值写入到地址为 rs1 + offset 处共 funct3 byte
-				src1_o = src1_o + S_imm;
+				src1_o = reg_src1 + S_imm;
 				
 				rtltype_o = `RTLTYPE_WMEM;
 				rtlop_o = `RTLOP_ADD;

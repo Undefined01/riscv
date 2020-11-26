@@ -6,7 +6,7 @@ module term(
 	input  wire				ena,
 	input  wire				rw,
 	input  wire	[`DATA_BUS]	addr,
-	output wire	[`DATA_BUS]	rdata,
+	output reg	[`DATA_BUS]	rdata,
 	input  wire	[`DATA_BUS]	wdata,
 	
 	// VGA
@@ -23,11 +23,13 @@ module term(
 	(* ram_init_file = "vga_term/null_term.mif" *) reg [7:0] term[70*30-1:0];
 	
 	
-	assign rdata = `DATA_ZERO;
-	always @(posedge clk) begin
-		if (ena && rw == `MEM_WRITE)
-			term[addr] <= wdata[7:0];
-	end
+	always @(posedge clk)
+		if (ena) begin
+			if (rw == `MEM_READ)
+				rdata <= {{24{1'b0}}, term[addr]};
+			else
+				term[addr] <= wdata[7:0];
+		end
 	
 	
 	wire [11:0] charidx;

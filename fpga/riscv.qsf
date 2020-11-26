@@ -16,6 +16,8 @@ set_global_assignment -name SEARCH_PATH src/lib
 set_global_assignment -name VERILOG_FILE src/lib/clk_div/clk_div.v
 set_global_assignment -name VERILOG_FILE src/lib/7segment/seg.v
 set_global_assignment -name VERILOG_FILE src/lib/counter/counter.v
+set_global_assignment -name VERILOG_FILE src/lib/keyboard/get_negedge.v
+set_global_assignment -name VERILOG_FILE src/lib/keyboard/ps2_keyboard_ext.v
 set_global_assignment -name VERILOG_FILE src/lib/vga_term/vga_term.v
 
 set_global_assignment -name VERILOG_FILE src/core/riscv_core.v
@@ -24,6 +26,13 @@ set_global_assignment -name VERILOG_FILE src/core/id.v
 set_global_assignment -name VERILOG_FILE src/core/id_ex.v
 set_global_assignment -name VERILOG_FILE src/core/ex.v
 set_global_assignment -name VERILOG_FILE src/core/ex_mem_wb.v
+
+set_global_assignment -name VERILOG_FILE src/perip/ram.v
+set_global_assignment -name VERILOG_FILE src/perip/term.v
+set_global_assignment -name VERILOG_FILE src/perip/kbd.v
+set_global_assignment -name VERILOG_FILE src/perip/time.v
+set_global_assignment -name VERILOG_FILE src/perip/perip.v
+
 set_global_assignment -name VERILOG_FILE src/riscv.v
 set_global_assignment -name SDC_FILE riscv.sdc
 

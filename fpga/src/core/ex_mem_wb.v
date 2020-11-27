@@ -45,7 +45,7 @@ module ex_mem_wb(
 	reg  stall_state;
 	
 	always @(posedge clk)
-		if (comb_stall)
+		if (comb_stall && stall_state)
 			stall_state <= 1'b0;
 		else
 			stall_state <= 1'b1;

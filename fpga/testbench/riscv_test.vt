@@ -139,6 +139,9 @@ module riscv_test();
 		`assert(core.gprs.regs[2], 32'h12345678)
 		`assert(core.gprs.regs[3], 32'h12345678)
 		`assert(core.gprs.regs[4], 32'h12345678)
+		`assert(core.gprs.regs[5], 32'h78)
+		`assert(core.gprs.regs[7], 100)
+		`assert(core.gprs.regs[8], 100)
 
 
 		reset();

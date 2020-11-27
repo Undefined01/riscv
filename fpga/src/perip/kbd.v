@@ -23,7 +23,7 @@ module kbd(
 		if (rst) begin
 			nextdata_n <= 1'b1;
 		end
-		else begin
+		else if (ena) begin
 			rdata <= `DATA_ZERO;
 			nextdata_n <= 1'b1;
 			if (ready && nextdata_n) begin

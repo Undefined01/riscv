@@ -36,24 +36,13 @@ li x5, 0
 lui x4, %hi(1000000)
 addi x4, x4, %lo(1000000)
 addi x1, x1, 12
-li x3, '.'
-sw x3, (x1)
-addi x1, x1, 1
 
-
-mv x11, x4
-jal x10, printhex
-
-mv x11, x1
-jal x10, printhex
 
 lui x2, %hi(TIME_ADDR)
 LOOP:
 lw x3, %lo(KBD_ADDR)(x2)
-beq x0, x3, KBD_END
-mv x11, x3
-jal x10, printhex
-li x3, '-'
+andi x3, x3, 0xff
+beq x3, x0, KBD_END
 sw x3, (x1)
 addi x1, x1, 1
 KBD_END:

@@ -19,15 +19,24 @@ module kbd(
 	wire keyup, extend;
 	wire [7:0] scancode;
 
+	`include "../lib/keyboard/scancode.h"
+	(* ram_init_file = "keyboard/scancode2ascii.mif" *) reg [7:0] ascii_table[511:0];
+	reg [7:0] ascii;
+	reg shift;
+
 	always @(posedge clk)
 		if (rst) begin
 			nextdata_n <= 1'b1;
 		end
-		else if (ena) begin
+		else begin
 			rdata <= `DATA_ZERO;
 			nextdata_n <= 1'b1;
-			if (ready && nextdata_n) begin
-				rdata <= {keyup, extend, {22{1'b0}}, scancode};
+			if (ena && ready && nextdata_n) begin
+				if (scancode == `KEY_LSHIFT || scancode == `KEY_RSHIFT)
+					shift <= keyup ^ 1'b1;
+				ascii = ascii_table[{shift, scancode}];
+				if (keyup) ascii = 8'h0;
+				rdata <= {{14{1'b0}}, keyup, extend, scancode, ascii};
 				nextdata_n <= 1'b0;
 			end
 		end

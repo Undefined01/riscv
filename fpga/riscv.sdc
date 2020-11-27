@@ -6,6 +6,7 @@
 # Create Clock
 #**************************************************************
 create_clock -period "50.000000 MHz" [get_ports CLOCK_50]
+create_clock -period "25.000000 MHz" [get_nets {perip|term|clk_div_25M|clk_out}]
 # create_clock -period "50.000000 MHz" [get_ports CLOCK2_50]
 # create_clock -period "50.000000 MHz" [get_ports CLOCK3_50]
 # create_clock -period "50.000000 MHz" [get_ports CLOCK4_50]

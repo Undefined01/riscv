@@ -161,6 +161,13 @@ module riscv_test();
 		`assert(core.gprs.regs[5], 11)
 
 
+		reset();
+		load("fib_b.hex");
+		run();
+		`assert(core.gprs.regs[2], 10946)
+		`assert(core.gprs.regs[5], 0)
+
+
 		$dumpflush;
 		$display("All test finished");
 	end

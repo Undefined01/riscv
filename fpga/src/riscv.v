@@ -26,8 +26,8 @@ module riscv(
 	output wire	VGA_BLANK_N,
 	
 	//////////// PS2 //////////
-	inout PS2_CLK,
-	inout PS2_DAT
+	inout  wire	PS2_CLK,
+	inout  wire	PS2_DAT
 );
 
 	wire clk = CLOCK_50;

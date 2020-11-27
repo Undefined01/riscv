@@ -81,7 +81,7 @@ module riscv_core(
 			if_valid <= 1'b0;
 		else if (!stall) begin
 			if_valid <= 1'b1;
-			if_pc <= pc;
+			if_pc <= mem_if_addr;
 		end
 	
 	

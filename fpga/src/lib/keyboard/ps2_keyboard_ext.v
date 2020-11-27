@@ -13,8 +13,8 @@ module ps2_keyboard(
 	output reg	overflow
 );
 
-	reg [9:0] fifo[7:0];
-	reg [2:0] w_ptr, r_ptr;
+	reg [9:0] fifo[15:0];
+	reg [3:0] w_ptr, r_ptr;
 	
 	wire sampling;
 	get_negedge ps2_negedge (clk, rst, ps2_clk, sampling);
@@ -28,8 +28,8 @@ module ps2_keyboard(
 	reg [7:0] last_scancode;
 	always @(posedge clk or posedge rst) begin
 		if (rst) begin
-			w_ptr <= 3'b0;
-			r_ptr <= 3'b0;
+			w_ptr <= 4'b0;
+			r_ptr <= 4'b0;
 			ready <= 1'b0;
 			overflow <= 1'b0;
 			

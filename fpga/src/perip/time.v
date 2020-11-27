@@ -22,7 +22,7 @@ module perip_time(
 				rdata <= time_us[63:32];
 		end
 	
-	clk_div #(50) clk1us(clk, 1'b1, rst, clk_1us);
+	clk_div #(50) clk_div_1us (clk, 1'b1, rst, clk_1us);
 	
 	counter #(64'hffffffffffffffff) time_cnt(
 		.clk(clk_1us),

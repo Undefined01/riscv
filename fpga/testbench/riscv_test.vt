@@ -1,6 +1,7 @@
 `timescale 1 ps/ 1 ps
 `include "../src/common.v"
 
+//`define TESTBENCH_PWD "C:/Users/gh/FPGA/riscv/fpga/testbench/"
 `define TESTBENCH_PWD "E:/test/riscv/fpga/testbench/"
 
 module riscv_test();
@@ -170,7 +171,190 @@ module riscv_test();
 		`assert(core.gprs.regs[2], 10946)
 		`assert(core.gprs.regs[5], 0)
 
+                reset();
+                load("rv32ui-p-bge.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
 
+                reset();
+                load("rv32ui-p-lb.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-ori.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-sltiu.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-sw.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-add.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-bgeu.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-lbu.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-sb.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-sltu.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-xor.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-addi.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-blt.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-lh.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-sh.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-sra.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-xori.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-and.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-bltu.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-lhu.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-sll.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-srai.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-andi.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-bne.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-lui.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-slli.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-srl.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-auipc.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-jal.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-lw.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-slt.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-srli.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-beq.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-jalr.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-or.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-slti.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
+
+                reset();
+                load("rv32ui-p-sub.hex");
+                run();
+                `assert(core.id_pc_i, 32'h8)
 		$dumpflush;
 		$display("All test finished");
 	end

@@ -12,7 +12,7 @@ module ram(
 );
 	
 	reg [`DATA_BUS] ram[`RAM_SIZE-1:0];
-	initial $readmemh("../testbench/build/test_perip.hex", ram);
+	initial $readmemh("../testbench/build/firmware.hex", ram);
 	
 	always @(posedge clk) begin
 		if (mem_ena) begin

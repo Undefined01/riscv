@@ -5,10 +5,10 @@ module vga_term #(
 	parameter term_h = 30
 ) (
 	input  wire			clk_50M,	// 50MHz 时钟
-	input  wire			clk_25M,	// 25MHz 时钟
 	input  wire			rst,		// 置位
-	output wire	[11:0]	charidx,	// 提供给上层模块的当前扫描像素点坐标
+	output wire	[11:0]	charidx,	// 提供给上层模块的当前扫描字符坐标
 	input  wire	[7:0]	char,
+	output wire			vga_clk,	// 25MHz 时钟
 	output wire			sync_n,		// 同步信号
 	output wire			hsync,		// 行同步和列同步信号
 	output wire			vsync,
@@ -29,6 +29,11 @@ module vga_term #(
 	localparam v_backporch = 515;
 	localparam v_total = 525;
 	
+	wire clk_25M;
+	clk_div #(2) clk_div_25M (clk_50M, 1'b1, rst, clk_25M);
+	assign vga_clk = clk_25M;
+
+
 	// 像素计数值
 	wire [9:0] x, y;
 	wire xcarry, ycarry;
@@ -107,7 +112,9 @@ module char_rom(
 	output reg	[11:0]	data_row
 );
 
-	(* ram_init_file = "vga_term/vga_font.mif" *) reg [11:0] ram[256*16-1:0];
+	(* ram_init_file = "vga_term/vga_font.mif" *)
+	(* ram_style = "distributed" *)
+	reg [11:0] ram[256*16-1:0];
 	
 	wire [12:0] addr = {char, row};
 	always @(negedge clk) data_row <= ram[addr];

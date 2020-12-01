@@ -38,13 +38,12 @@ module term(
 		char <= term[charidx];
 	
 	
-	clk_div #(2) clk_div_25M (clk, 1'b1, rst, VGA_CLK);
 	vga_term vga_term (
 		.clk_50M(clk),
-		.clk_25M(VGA_CLK),
 		.rst(rst),
 		.charidx(charidx),
 		.char(char),
+		.vga_clk(VGA_CLK),
 		.sync_n(VGA_SYNC_N),
 		.hsync(VGA_HS),
 		.vsync(VGA_VS),

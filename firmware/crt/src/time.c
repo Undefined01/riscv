@@ -9,3 +9,7 @@ unsigned int time_l() {
 unsigned int time_h() {
 	return time_addr[1];
 }
+
+unsigned long long time() {
+	return *(unsigned long long *)time_addr;
+}

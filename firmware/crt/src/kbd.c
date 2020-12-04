@@ -2,8 +2,21 @@
 
 int * const kbd_addr  = (void*)0xa1000010;
 
+const int KEYUP_MASK = 1 << 17;
+const int EXTEND_MASK = 1 << 16;
+const int SCANCODE_MASK = 0x0000ff00;
+const int ASCII_MASK = 0x000000ff;
+
 int kbd_pollevent() {
 	return *kbd_addr;
+}
+
+int kbd_waitevent() {
+	int event;
+	do {
+		event = *kbd_addr;
+	} while (event != 0);
+	return event;
 }
 
 int getchar() {

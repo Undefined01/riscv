@@ -4,3 +4,4 @@ extern int * const kbd_addr;
 
 int getchar();
 int kbd_pollevent();
+int kbd_waitevent();

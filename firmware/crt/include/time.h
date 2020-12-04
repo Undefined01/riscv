@@ -9,3 +9,4 @@ extern const int term_tot;
 
 unsigned int time_l();
 unsigned int time_h();
+unsigned long long time();

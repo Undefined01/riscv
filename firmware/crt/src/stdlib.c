@@ -23,7 +23,6 @@ int atoi(const int* nptr) {
   return x;
 }
 
-/*
 int* itoa(int num) {
   int len1 = 0, len2 = 0;
   if (num < 0) {
@@ -35,9 +34,10 @@ int* itoa(int num) {
     buf1[len1 ++] = '0';
   }
 
-  while (num > 0) {
-    buf2[len2 ++] = num % 10;
-    num = num / 10; 
+  unsigned int u_num = num;
+  while (u_num > 0) {
+    buf2[len2 ++] = '0' + u_num % 10;
+    u_num = u_num / 10; 
   }
 
   while (len2) {
@@ -48,4 +48,3 @@ int* itoa(int num) {
   buf1[len1] = '\0';
   return buf1;
 }
-*/

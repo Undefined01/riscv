@@ -9,7 +9,12 @@ int fib(int * args) {
     int n = atoi(args);
 
     if (n <= 0) {
+        puts("hex: ");
         printhex(0);
+        putchar('\n');
+
+        puts("dec: ");
+        putchar('0');
         putchar('\n');
         return 0;
     }
@@ -21,7 +26,13 @@ int fib(int * args) {
         y = z;
     }
 
+    puts("hex: ");
     printhex(y);
+    putchar('\n');
+
+    int * ans = itoa(y);
+    puts("dec: ");
+    for (int i = 0; ans[i] != '\0'; i ++) putchar(ans[i]);
     putchar('\n');
     return 0;
 }

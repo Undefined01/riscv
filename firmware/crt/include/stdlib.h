@@ -5,4 +5,4 @@ extern int buf2[12];
 
 int strcmp(const int* , const int*);
 int atoi(const int*);
-// int* itoa(const int);
+int* itoa(const int);

@@ -46,6 +46,11 @@ static void _putch(int ch) {
 	*(int *)((int)term_addr + cursor_tot) = ch;
 }
 
+void backspace() {
+	revstep_cursor();
+	*(int *)((int)term_addr + cursor_tot) = 0;
+}
+
 void putchar(int ch) {
 	if (ch == '\n') {
 		newline();

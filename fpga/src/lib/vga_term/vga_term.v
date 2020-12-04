@@ -13,9 +13,9 @@ module vga_term #(
 	output wire			hsync,		// 行同步和列同步信号
 	output wire			vsync,
 	output wire			valid,		// 消隐信号
-	output wire	[7:0]	vga_r,		// 红绿蓝颜色信号
-	output wire	[7:0]	vga_g,
-	output wire	[7:0]	vga_b
+	output reg	[7:0]	vga_r,		// 红绿蓝颜色信号
+	output reg	[7:0]	vga_g,
+	output reg	[7:0]	vga_b
 );
 
 	// 640x480 分辨率下的 VGA 参数设置
@@ -101,7 +101,8 @@ module vga_term #(
 
 	char_rom char_rom(clk_50M, char, row, data_row);
 	
-	assign {vga_r, vga_g, vga_b} = {24{h_invalid ? 1'b0 : data_row[col]}};
+	always @(posedge clk_50M)
+		{vga_r, vga_g, vga_b} <= {24{h_invalid ? 1'b0 : data_row[col]}};
 		
 endmodule
 
@@ -117,6 +118,6 @@ module char_rom(
 	reg [11:0] ram[256*16-1:0];
 	
 	wire [12:0] addr = {char, row};
-	always @(negedge clk) data_row <= ram[addr];
+	always @(posedge clk) data_row <= ram[addr];
 
 endmodule

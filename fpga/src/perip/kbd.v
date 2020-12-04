@@ -70,7 +70,7 @@ module kbd(
 					extend <= 1'b0;
 				end
 			end
-			if (last_code[7:0] != 8'b0 && last_code[9] == 1'b0 && ascii != 8'b0) begin
+			if (last_code[7:0] != 10'b0 && last_code[9] == 1'b0 && ascii != 8'b0) begin
 				fifo[head] <= {{14{1'b0}}, last_code, ascii};
 				head <= head + 1'b1;
 			end

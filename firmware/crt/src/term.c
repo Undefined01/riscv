@@ -42,7 +42,7 @@ void revstep_cursor() {
 	}
 }
 
-void _putch(int ch) {
+static void _putch(int ch) {
 	*(int *)((int)term_addr + cursor_tot) = ch;
 }
 
@@ -51,7 +51,7 @@ void putchar(int ch) {
 		newline();
 		return;
 	}
-	*(int *)((int)term_addr + cursor_tot) = ch;
+	_putch(ch);
 	step_cursor();
 }
 
@@ -83,11 +83,33 @@ void printhex(unsigned int num) {
 	int len = 0;
 	int d[8];
 	do {
-		d[len++] = num & 0xff;
-		num >>= 8;
+		d[len++] = num & 0xf;
+		num >>= 4;
 	} while (num);
-	while (len--)
-		putchar(d[len]);
+	while (len--) {
+		if (d[len] >= 10)
+			putchar(d[len] + 'a' - 10);
+		else
+			putchar(d[len] + '0');
+	}
+}
+
+int get_cursor_row() {
+	return cursor_row;
+}
+
+int get_cursor_col() {
+	return cursor_col;
+}
+
+void set_cursor_row(int row) {
+	cursor_tot += (row - cursor_row) * term_w;
+	cursor_row = row;
+}
+
+void set_cursor_col(int col) {
+	cursor_tot += col - cursor_col;
+	cursor_col = col;
 }
 
 void set_cursor(int row, int col) {

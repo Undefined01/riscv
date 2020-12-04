@@ -1,8 +1,6 @@
 #include <kbd.h>
-#include <term.h>
 
 int * const kbd_addr  = (void*)0xa1000010;
-int * const time_addr = (void*)0xa1000020;
 
 int kbd_pollevent() {
 	return *kbd_addr;

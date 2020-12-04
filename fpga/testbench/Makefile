@@ -12,7 +12,7 @@ src_dir := src
 build_dir := build
 utils_dir := utils
 
-UTILS := bin2hexfile
+UTILS := bin2hexfile bin2mif
 SRCS := $(wildcard ${src_dir}/*.s)
 
 utils_src   := $(addprefix ${utils_dir}/,${UTILS})

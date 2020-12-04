@@ -11,8 +11,9 @@ module ram(
 	input  wire	[`DATA_BUS]	mem_wdata
 );
 	
+	(* ram_init_file = "../../../firmware/final/build/firmware.mif" *)
 	reg [`DATA_BUS] ram[`RAM_SIZE-1:0];
-	initial $readmemh("../testbench/build/firmware.hex", ram);
+//	initial $readmemh("../../../firmware/final/build/firmware.hex", ram);
 	
 	always @(posedge clk) begin
 		if (mem_ena) begin

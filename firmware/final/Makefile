@@ -8,6 +8,7 @@ CC := ${toolchain}gcc
 OBJCOPY := ${toolchain}objcopy
 OBJDUMP := ${toolchain}objdump
 BIN2HEX := ../../fpga/testbench/build/bin2hexfile
+BIN2MIF := ../../fpga/testbench/build/bin2mif
 
 
 LIBS += ../crt/build/crt.a
@@ -36,7 +37,7 @@ ${build_dir}/%.o:${src_dir}/%.s
 	@echo + AS $@
 	@${AS} -march=rv32i -o $@ $<
 
-${LIBS}:
+${LIBS}: force_update
 	@echo + LIB $@
 	@${MAKE} -C $(shell echo $@ | sed -E 's/(build)?\/[^\/]*\.a//g')
 
@@ -53,6 +54,10 @@ ${build_dir}/firmware.elf: \
 	@echo + HEX $@
 	@${BIN2HEX} $^ $@
 
+%.mif:%.bin
+	@echo + MIF $@
+	@${BIN2MIF} $^ $@
+
 
 .PHONY: all clean make_build_dir
 
@@ -60,7 +65,9 @@ make_build_dir:
 	@mkdir -p ${build_dir}
 
 all: make_build_dir \
-	${build_dir}/firmware.hex
+	${build_dir}/firmware.mif
 
 clean:
 	rm -r ${build_dir}
+
+force_update:

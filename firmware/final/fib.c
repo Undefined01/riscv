@@ -1,38 +1,30 @@
-#include <term.h>
 #include <stdlib.h>
+#include <term.h>
 
-int fib(int * args) {
+int cmd_fib(int *args) {
     if (args == 0) {
-        puts("need arg\n");
+        printstr("need arg\n");
         return 0;
     }
+
     int n = atoi(args);
+    unsigned int x = 0, y = 1, z;
 
     if (n <= 0) {
-        puts("hex: ");
-        printhex(0);
-        putchar('\n');
-
-        puts("dec: ");
-        putchar('0');
-        putchar('\n');
-        return 0;
+        y = 0;
+    } else {
+        for (int i = 1; i < n; i++) {
+            z = x + y;
+            x = y;
+            y = z;
+        }
     }
 
-    int x = 0, y = 1, z;
-    for (int i = 1; i < n; i ++) {
-        z = x + y;
-        x = y;
-        y = z;
-    }
-
-    puts("hex: ");
-    printhex(y);
+    printstr("The ");
+    printdec((unsigned)n);
+    printstr(" fib is ");
+    printdec(y);
     putchar('\n');
 
-    int * ans = itoa(y);
-    puts("dec: ");
-    for (int i = 0; ans[i] != '\0'; i ++) putchar(ans[i]);
-    putchar('\n');
     return 0;
 }

@@ -9,8 +9,10 @@ extern const int term_tot;
 
 void newline();
 void putchar(int ch);
-void puts(char *str);
+void printstr(const char *str);
 void printhex(unsigned int num);
+void printdec(unsigned int num);
+void backspace();
 void set_cursor(int row, int col);
 int  get_cursor_row();
 int  get_cursor_col();

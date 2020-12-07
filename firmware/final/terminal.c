@@ -1,94 +1,85 @@
-#include <term.h>
 #include <kbd.h>
 #include <stdlib.h>
+#include <term.h>
 
 // add command here
-int hello(int *);
+int cmd_hello(int *args);
 const int hello_name[] = {'h', 'e', 'l', 'l', 'o', '\0'};
 
-int fib(int *);
+int cmd_fib(int *args);
 const int fib_name[] = {'f', 'i', 'b', '\0'};
-//
-int cmd_help(int *);
+
+int cmd_help(int *args);
 const int cmd_help_name[] = {'h', 'e', 'l', 'p', '\0'};
-//
+
+int cmd_md5(int *args);
+const int md5_name[] = {'m', 'd', '5', '\0'};
+
+int cmd_echo(int *args);
+const int echo_name[] = {'e', 'c', 'h', 'o', '\0'};
 
 static struct {
-  const int *name;
-  char *description;
-  int (*handler) (int *);
-} cmd_table [] = {
-  { cmd_help_name, "help: Display informations about all supported commands\n", cmd_help },
-  { hello_name, "hello: Hell, world!\n", hello },
-  { fib_name, "fib arg: fibonacii[arg]\n", fib },
-
-  // add command here
+    const int *name;
+    const char *description;
+    int (*handler)(int *);
+} cmd_table[] = {
+    {cmd_help_name, "help: Display informations about all supported commands\n",
+     cmd_help},
+    {hello_name, "hello: Print \"hello, world!\"\n", cmd_hello},
+    {echo_name, "echo <str>: Print arguments directly\n", cmd_echo},
+    {fib_name, "fib <n>: Print the n-th Fibonacci number\n", cmd_fib},
+    {md5_name, "md5 <msg>: Print MD5 checksum of arguments\n", cmd_md5},
 };
 
 #define NR_CMD (int)(sizeof(cmd_table) / sizeof(cmd_table[0]))
 
-int cmd_help(int * args) {
-  int i;
-  for (i = 0; i < NR_CMD; i ++) {
-    puts(cmd_table[i].description);
-  }
-
-  return 0;
+int cmd_help(int *args) {
+    UNUSED(args);
+    for (int i = 0; i < NR_CMD; i++) printstr(cmd_table[i].description);
+    return 0;
 }
 
-int cmd[40], cmd_len = 0;
-int * cmd_args;
+int cmd[128], cmd_len;
+int *cmd_args;
 
-void gcmd() {
+int gcmd() {
     putchar('$');
-    while (cmd_len == 0 || cmd[cmd_len - 1] != '\n') {
-        int ch = getchar();
-        // if (cmd_len == 0) putchar('!');
+    cmd_len = 0;
+    int ch;
+
+    do {
+        ch = getchar();
         if (ch == '\b') {
-          backspace();
-          cmd[-- cmd_len] = '\0';
+            backspace();
+            cmd[--cmd_len] = '\0';
         } else {
-          cmd[cmd_len ++] = ch;
-          putchar(ch);
+            putchar(ch);
+            if (ch == '\n') {
+                cmd[cmd_len++] = '\0';
+                break;
+            } else {
+                cmd[cmd_len++] = ch;
+            }
         }
-    }
+    } while (ch != '\n');
 
-    for (int i = 0; i < cmd_len; i ++) if (cmd[i] == ' ' || cmd[i] == '\n') {
-      cmd[i] = '\0';
-      cmd_args = &cmd[i + 1];
-      break;
-    }
-}
+    cmd_args = cmd;
+    while (*cmd_args != ' ' && *cmd_args != '\n') cmd_args++;
+    *cmd_args++ = '\0';
+    if (cmd_args - cmd >= cmd_len) cmd_args = NULL;
 
-void exec() {
-  int i;
-  for (i = 0; i < NR_CMD; i ++) {
-    if (strcmp(cmd, cmd_table[i].name) == 0) {
-      // puts("exec");
-      if (cmd_table[i].handler(cmd_args) < 0) { return; }
-      break;
-    }
-  }
-}
-
-void clear() {
-  while (cmd_len) {
-    cmd_len --;
-    // if (cmd_len == 0) putchar('!');
-    // putchar(cmd[cmd_len]);
-    cmd[cmd_len] = '\0';
-  }
-  cmd_args = 0;
+    for (int i = 0; i < NR_CMD; i++)
+        if (strcmp(cmd, cmd_table[i].name) == 0)
+            return cmd_table[i].handler(cmd_args);
+    printstr("Invalid command\n");
+    return 0;
 }
 
 int main() {
-	puts("This is RISC-V project, written by Verilog and C.\n");
-	puts("Have fun!\n");
+    printstr("This is RISC-V project, written by Verilog and C.\n");
+    printstr("Have fun!\n");
 
-	while (1) {
+    while (1) {
         gcmd();
-        // for (int i = 0; i < cmd_len; i ++) putchar(cmd[i]); putchar('\n');
-        exec();
-        clear();
-	}
+    }
 }

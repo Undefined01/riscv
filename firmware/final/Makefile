@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := all
 
 
-toolchain := riscv64-unknown-elf-
+toolchain ?= riscv64-unknown-elf-
 AS := ${toolchain}as
 LD := ${toolchain}ld
 CC := ${toolchain}gcc
@@ -11,11 +11,15 @@ BIN2HEX := ../../fpga/testbench/build/bin2hexfile
 BIN2MIF := ../../fpga/testbench/build/bin2mif
 
 
-LIBS += ../crt/build/crt.a
+GCC_WARNS := -Wall -Wextra -Wconversion -pedantic -Wcast-qual -Wcast-align -Wwrite-strings
+CFLAGS ?= -O2 -march=rv32i -mabi=ilp32 -nostdinc -nostdlib -fno-builtin \
+	${GCC_WARNS}
 
-INCS += ../crt/include
+LIBS := ../crt/build/crt.a
 
-INCS := $(addprefix -I, ${INCS})
+INCLUDES := ../crt/include
+
+INCLUDES := $(addprefix -I, ${INCLUDES})
 
 src_dir := .
 build_dir := build
@@ -31,7 +35,7 @@ OBJS := $(addprefix ${build_dir}/,${OBJS})
 
 ${build_dir}/%.o:${src_dir}/%.c
 	@echo + CC $@
-	@${CC} -c -march=rv32i -mabi=ilp32 -Wall -Wextra -nostdlib -fno-builtin -O1 ${INCS} -o $@ $<
+	@${CC} -c ${CFLAGS} ${INCLUDES} -o $@ $<
 
 ${build_dir}/%.o:${src_dir}/%.s
 	@echo + AS $@

@@ -12,7 +12,7 @@ BIN2MIF := ../../fpga/testbench/build/bin2mif
 
 
 GCC_WARNS := -Wall -Wextra -Wconversion -pedantic -Wcast-qual -Wcast-align -Wwrite-strings
-CFLAGS ?= -march=rv32i -mabi=ilp32 -nostdinc -nostdlib -fno-builtin \
+CFLAGS ?= -O2 -march=rv32i -mabi=ilp32 -nostdinc -nostdlib -fno-builtin \
 	${GCC_WARNS}
 
 LIBS := ../crt/build/crt.a

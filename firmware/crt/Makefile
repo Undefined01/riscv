@@ -1,12 +1,16 @@
 .DEFAULT_GOAL := all
 
 
-toolchain := riscv64-unknown-elf-
+toolchain ?= riscv64-unknown-elf-
 AS := ${toolchain}as
 LD := ${toolchain}ld
 AR := ${toolchain}ar
 CC := ${toolchain}gcc
 
+
+GCC_WARNS := -Wall -Wextra -Wconversion -pedantic -Wcast-qual -Wcast-align -Wwrite-strings
+CFLAGS ?= -O2 -march=rv32i -mabi=ilp32 -nostdinc -nostdlib -fno-builtin \
+	${GCC_WARNS}
 
 src_dir := src
 include_dir := include
@@ -23,7 +27,7 @@ OBJS := $(patsubst ${src_dir}/%,${build_dir}/%,${OBJS})
 
 ${build_dir}/%.o:${src_dir}/%.c
 	@echo + CC $@
-	@${CC} -c -march=rv32i -mabi=ilp32 -Wall -Wextra -nostdlib -fno-builtin -O1 -I ${include_dir} -o $@ $<
+	@${CC} -c ${CFLAGS} -I ${include_dir} -o $@ $<
 
 ${build_dir}/%.o:${src_dir}/%.s
 	@echo + AS $@

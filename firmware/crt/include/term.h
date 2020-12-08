@@ -18,3 +18,4 @@ int  get_cursor_row();
 int  get_cursor_col();
 void set_cursor_row(int row);
 void set_cursor_col(int col);
+void clear_screen();

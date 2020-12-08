@@ -59,8 +59,9 @@ void putchar(int ch) {
 }
 
 void printstr(const char *str) {
-    int *s = (int *)str;
-    unsigned int pack, ch;
+    const unsigned int *s = (const unsigned int *)str;
+    unsigned int pack;
+    int ch;
     while (1) {
         pack = *s++;
         ch = pack & 0xff;
@@ -75,7 +76,7 @@ void printstr(const char *str) {
         if (ch == 0) break;
         putchar(ch);
         pack >>= 8;
-        ch = pack;
+        ch = (signed)pack;
         if (ch == 0) break;
         putchar(ch);
         pack >>= 8;
@@ -101,7 +102,7 @@ void printdec(unsigned int num) {
     int len = 0;
     int d[8];
     do {
-        d[len++] = num % 10;
+        d[len++] = (signed)(num % 10);
         num /= 10;
     } while (num);
     while (len--) putchar(d[len] + '0');
@@ -125,4 +126,11 @@ void set_cursor(int row, int col) {
     cursor_row = row;
     cursor_col = col;
     cursor_tot = row * term_w + col;
+}
+
+void clear_screen() {
+    for (int i = 0; i < term_tot; i++) *(int *)((int)term_addr + i) = 0;
+    cursor_tot = 0;
+    cursor_col = 0;
+    cursor_row = 0;
 }

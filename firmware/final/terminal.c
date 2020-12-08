@@ -18,6 +18,12 @@ const int md5_name[] = {'m', 'd', '5', '\0'};
 int cmd_echo(int *args);
 const int echo_name[] = {'e', 'c', 'h', 'o', '\0'};
 
+int cmd_uptime(int *args);
+const int uptime_name[] = {'u', 'p', 't', 'i', 'm', 'e', '\0'};
+
+int cmd_snake(int *args);
+const int snake_name[] = {'s', 'n', 'a', 'k', 'e', '\0'};
+
 static struct {
     const int *name;
     const char *description;
@@ -29,6 +35,8 @@ static struct {
     {echo_name, "echo <str>: Print arguments directly\n", cmd_echo},
     {fib_name, "fib <n>: Print the n-th Fibonacci number\n", cmd_fib},
     {md5_name, "md5 <msg>: Print MD5 checksum of arguments\n", cmd_md5},
+    {uptime_name, "uptime: Print seconds since cpu is up\n", cmd_uptime},
+    {snake_name, "snake: Start greedy snake game\n", cmd_snake},
 };
 
 #define NR_CMD (int)(sizeof(cmd_table) / sizeof(cmd_table[0]))

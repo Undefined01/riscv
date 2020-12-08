@@ -3,5 +3,9 @@
 #define NULL ((void *)0)
 #define UNUSED(...) ((void)(__VA_ARGS__))
 
-int strcmp(const int*, const int*);
-int atoi(const int*);
+typedef unsigned int uint32_t;
+
+int rand();
+void sleep(unsigned int us);
+int strcmp(const int *s1, const int *s2);
+int atoi(const int *nptr);

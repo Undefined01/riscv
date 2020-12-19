@@ -1,6 +1,6 @@
 module clk_div
 #(
-	parameter div_num
+	parameter div_num = 2
 ) (
 	input clk,
 	input ena,

@@ -10,9 +10,6 @@ module perip(
 	output reg	[`DATA_BUS]	mem_rdata,
 	input  wire	[`DATA_BUS]	mem_wdata,
 	
-	output wire [7:0] seg,
-	output wire [7:0] seg2,
-	
 	// VGA
 	output wire	[7:0] VGA_R,
 	output wire	[7:0] VGA_G,
@@ -116,9 +113,7 @@ module perip(
 		.rw(mem_rw),
 		.addr(time_addr),
 		.rdata(time_rdata),
-		.wdata(mem_wdata),
-		.seg1(seg),
-		.seg2(seg2)
+		.wdata(mem_wdata)
 	);
 
 endmodule

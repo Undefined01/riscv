@@ -1,5 +1,5 @@
 module counter #(
-	parameter bound,
+	parameter bound = 2,
 	parameter width = $clog2(bound)
 ) (
 	input clk,

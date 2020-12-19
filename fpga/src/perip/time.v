@@ -7,9 +7,7 @@ module perip_time(
 	input  wire				rw,
 	input  wire	[`DATA_BUS]	addr,
 	output reg	[`DATA_BUS]	rdata,
-	input  wire	[`DATA_BUS]	wdata,
-	output wire [7:0] seg1,
-	output wire [7:0] seg2
+	input  wire	[`DATA_BUS]	wdata
 );
 	
 	wire clk_1us;
@@ -33,7 +31,5 @@ module perip_time(
 		.num(time_us),
 		.carry(carry)
 	);
-	assign seg1 = time_us[23:16];
-	assign seg2 = time_us[7:0];
 
 endmodule

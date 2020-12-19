@@ -61,7 +61,7 @@ module vga_term #(
 			row <= 4'b0;
 			col <= 4'b0;
 			char_col <= 7'b0;
-			base <= 8'b0;
+			base <= 12'b0;
 		end
 		else begin
 			if (x < h_active || x >= h_backporch) begin
@@ -70,7 +70,7 @@ module vga_term #(
 				char_col <= 7'b0;
 				if (y < v_active || y >= v_backporch) begin
 					row <= 4'b0;
-					base <= 8'b0;
+					base <= 12'b0;
 				end
 			end
 			else if (!h_invalid) begin
@@ -117,7 +117,7 @@ module char_rom(
 	(* ram_style = "distributed" *)
 	reg [11:0] ram[256*16-1:0];
 	
-	wire [12:0] addr = {char, row};
+	wire [11:0] addr = {char, row};
 	always @(posedge clk) data_row <= ram[addr];
 
 endmodule

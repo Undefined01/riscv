@@ -8,8 +8,6 @@ module kbd(
 	input  wire	[`DATA_BUS]	addr,
 	output reg	[`DATA_BUS]	rdata,
 	input  wire	[`DATA_BUS]	wdata,
-	output reg  [7:0] count,
-	output reg  [7:0] seg2,
 	
 	
 	// keyboard
@@ -52,14 +50,12 @@ module kbd(
 			keyup <= 1'b0;
 			extend <= 1'b0;
 			shift <= 1'b0;
-			last_code <= 8'b0;
+			last_code <= 10'b0;
 		end
 		else begin
 			rdata <= `DATA_ZERO;
-			last_code <= 8'b0;
+			last_code <= 10'b0;
 			if (ready) begin
-				count <= count + 1'b1;
-				seg2 <= scancode;
 				if (is_keyup) keyup <= 1'b1;
 				if (is_extend) extend <= 1'b1;
 				if (!is_keyup && !is_extend) begin

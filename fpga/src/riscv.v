@@ -49,8 +49,6 @@ module riscv(
 		.mem_addr(mem_addr),
 		.mem_rdata(mem_rdata),
 		.mem_wdata(mem_wdata),
-		.seg(seg),
-		.seg2(seg2),
 		// VGA
 		.VGA_R(VGA_R),
 		.VGA_G(VGA_G),

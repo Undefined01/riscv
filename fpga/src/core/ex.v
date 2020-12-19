@@ -23,8 +23,8 @@ module ex(
 
 	wire [`DATA_BUS] res_add = src1 + src2;
 	wire [`DATA_BUS] res_shl = src1 << src2[4:0];
-	wire [`DATA_BUS] res_slt = $signed(src1) < $signed(src2);
-	wire [`DATA_BUS] res_sltu = src1 < src2;
+	wire [`DATA_BUS] res_slt = {{31{1'b0}}, $signed(src1) < $signed(src2)};
+	wire [`DATA_BUS] res_sltu = {{31{1'b0}}, src1 < src2};
 	wire [`DATA_BUS] res_xor = src1 ^ src2;
 	wire [`DATA_BUS] res_shr = src1 >> src2[4:0];
 	wire [`DATA_BUS] res_sar = $signed(src1) >>> src2[4:0];
@@ -87,7 +87,7 @@ module ex(
 			end
 			
 			default: begin
-				gprs_waddr_o <= `REG_X0;
+				gprs_waddr_o = `REG_X0;
 			end
 		endcase
 	end

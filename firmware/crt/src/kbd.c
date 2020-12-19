@@ -1,6 +1,6 @@
 #include <kbd.h>
 
-int* const kbd_addr = (void*)0xa1000010;
+volatile int* const kbd_addr = (void*)0xa1000010;
 
 const int KEYUP_MASK = 1 << 17;
 const int EXTEND_MASK = 1 << 16;

@@ -1,6 +1,6 @@
 #pragma pack(4)
 
-extern int * const term_addr;
+extern volatile int * const term_addr;
 
 extern const int term_w;
 extern const int term_h;

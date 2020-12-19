@@ -1,6 +1,6 @@
 #include <term.h>
 
-int *const term_addr = (void *)0xa0000000;
+volatile int *const term_addr = (void *)0xa0000000;
 
 const int term_w = 70;
 const int term_h = 30;

@@ -1,0 +1,27 @@
+name: Build and Test Firmware
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout reposistory
+      uses: actions/checkout@v2
+
+    - name: Install cross-compile toolchain for riscv
+      run: sudo apt install gcc-riscv64-linux-gnu
+
+    - name: Build Small Tests
+      run: make -C fpga/testbench/
+      env:
+        RV_TOOLCHAIN: riscv64-linux-gnu-
+
+    - name: Build `final` firmware
+      run: make -C firmware/final
+      env:
+        toolchain: riscv64-linux-gnu-
+

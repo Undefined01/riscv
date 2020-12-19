@@ -1,0 +1,40 @@
+name: Build and Test RISC-V Core
+
+on:
+  - push
+  - pull_request
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout reposistory
+      uses: actions/checkout@v2
+
+    - name: Checkout submodules
+      run: git submodule update --init --recursive
+
+    - name: Install cross-compile toolchain for riscv
+      run: sudo apt install gcc-riscv64-linux-gnu
+
+    - name: Install Icarus Verilog simulator
+      run: sudo apt install iverilog
+
+    - name: Build Small Tests
+      run: make -C fpga/testbench/
+      env:
+        RV_TOOLCHAIN: riscv64-linux-gnu-
+
+    - name: Build RISC-V Tests
+      run: make -C riscv-tests/isa rv32ui
+      env:
+        RISCV_PREFIX: riscv64-linux-gnu-
+        RISCV_GCC_OPTS: -static -mcmodel=medany -fvisibility=hidden -nostdinc -nostdlib -nostartfiles -Wl,--no-relax -Wl,--build-id=none
+
+    - name: Compile Testbench
+      run: iverilog -g2012 -DTESTCASE_DIR="\"fpga/testbench/build/\"" -Ifpga/src/lib/keyboard -Ifpga/src/core -Ifpga/src -Ifpga/testbench $(find fpga/src -name \*.v | grep -v ext) fpga/testbench/riscv_test.vt
+
+    - name: Run tests
+      run: vvp -N a.out
+

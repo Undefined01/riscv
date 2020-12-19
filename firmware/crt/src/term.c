@@ -4,7 +4,7 @@ volatile int *const term_addr = (void *)0xa0000000;
 
 const int term_w = 70;
 const int term_h = 30;
-const int term_tot = term_w * term_h;
+const int term_tot = 70 * 30;
 
 static int cursor_tot = 0;
 static int cursor_row = 0;

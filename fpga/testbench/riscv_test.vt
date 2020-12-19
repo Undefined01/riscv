@@ -1,8 +1,9 @@
 `timescale 1 ps/ 1 ps
 `include "../src/common.v"
 
-//`define TESTBENCH_PWD "C:/Users/gh/FPGA/riscv/fpga/testbench/"
-`define TESTBENCH_PWD "E:/test/riscv/fpga/testbench/"
+`ifndef TESTCASE_DIR
+`define TESTCASE_DIR "./build"
+`endif
 
 module riscv_test();
 
@@ -61,21 +62,18 @@ module riscv_test();
 	end
 	endtask
 
-	task load(input reg [30*8-1:0] hexfile);
-	begin
-		$readmemh({`TESTBENCH_PWD, "/build/", hexfile}, ram);
+	`define load(hexfile) \
+		$readmemh({`TESTCASE_DIR, hexfile}, ram); \
 		testname = hexfile;
-	end
-	endtask
 
 	task run();
 		integer i;
-	begin
+	begin : run_body
 		for (i = 0; i < 100000; i = i + 1) begin
 			tick();
 			if (core.if_instr == 32'h7f2a214b) begin
 				$display("%s terminated after %d steps", testname, i);
-				disable run;
+				disable run_body;
 			end
 			if (core.id_valid && core.id_error_o) begin
 				$display("In %s:", testname);
@@ -98,28 +96,24 @@ module riscv_test();
 	initial
 	begin : TB
 
-		// 记录 core 模块以及其下 1 层子模块的所有变量波形
-		$dumpfile("coredump.vcd");
-		$dumpvars(1, core);
-		$dumpvars(0, core.gprs.regs);
-
+		$display("Testcase directory is set to %s", `TESTCASE_DIR);
 		$display("Start testing");
 
 		reset();
-		load("add.hex");
+		`load("add.hex");
 		run();
 		`assert(core.gprs.regs[2], 144)
 		`assert(core.gprs.regs[3], 102)
 
 
 		reset();
-		load("fib10.hex");
+		`load("fib10.hex");
 		run();
 		`assert(core.gprs.regs[2], 89)
 
 
 		reset();
-		load("arich.hex");
+		`load("arich.hex");
 		run();
 		`assert(core.gprs.regs[5], 8)
 		`assert(core.gprs.regs[6], 4)
@@ -127,7 +121,7 @@ module riscv_test();
 
 
 		reset();
-		load("lui.hex");
+		`load("lui.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'ha0000000)
 		`assert(core.gprs.regs[2], 32'ha0000001)
@@ -135,7 +129,7 @@ module riscv_test();
 
 
 		reset();
-		load("ldst.hex");
+		`load("ldst.hex");
 		run();
 		`assert(core.gprs.regs[2], 32'h12345678)
 		`assert(core.gprs.regs[3], 32'h12345678)
@@ -146,7 +140,7 @@ module riscv_test();
 
 
 		reset();
-		load("jump.hex");
+		`load("jump.hex");
 		run();
 		`assert(core.gprs.regs[1], 21)
 		`assert(core.gprs.regs[2], 8)
@@ -158,7 +152,7 @@ module riscv_test();
 
 
 		reset();
-		load("branch.hex");
+		`load("branch.hex");
 		run();
 		`assert(core.gprs.regs[1], 1)
 		`assert(core.gprs.regs[2], -3)
@@ -166,198 +160,197 @@ module riscv_test();
 
 
 		reset();
-		load("fib_b.hex");
+		`load("fib_b.hex");
 		run();
 		`assert(core.gprs.regs[2], 10946)
 		`assert(core.gprs.regs[5], 0)
 
 		reset();
-		load("rv32ui-p-bge.hex");
+		`load("rv32ui-p-bge.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		// reset();
-		// load("rv32ui-p-lb.hex");
+		// `load("rv32ui-p-lb.hex");
 		// run();
 		// `assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-ori.hex");
+		`load("rv32ui-p-ori.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-sltiu.hex");
+		`load("rv32ui-p-sltiu.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-sw.hex");
+		`load("rv32ui-p-sw.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-add.hex");
+		`load("rv32ui-p-add.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-bgeu.hex");
+		`load("rv32ui-p-bgeu.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		// reset();
-		// load("rv32ui-p-lbu.hex");
+		// `load("rv32ui-p-lbu.hex");
 		// run();
 		// `assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		// reset();
-		// load("rv32ui-p-sb.hex");
+		// `load("rv32ui-p-sb.hex");
 		// run();
 		// `assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-sltu.hex");
+		`load("rv32ui-p-sltu.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-xor.hex");
+		`load("rv32ui-p-xor.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-addi.hex");
+		`load("rv32ui-p-addi.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-blt.hex");
+		`load("rv32ui-p-blt.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		// reset();
-		// load("rv32ui-p-lh.hex");
+		// `load("rv32ui-p-lh.hex");
 		// run();
 		// `assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		// reset();
-		// load("rv32ui-p-sh.hex");
+		// `load("rv32ui-p-sh.hex");
 		// run();
 		// `assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-sra.hex");
+		`load("rv32ui-p-sra.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-xori.hex");
+		`load("rv32ui-p-xori.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-and.hex");
+		`load("rv32ui-p-and.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-bltu.hex");
+		`load("rv32ui-p-bltu.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		// reset();
-		// load("rv32ui-p-lhu.hex");
+		// `load("rv32ui-p-lhu.hex");
 		// run();
 		// `assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-sll.hex");
+		`load("rv32ui-p-sll.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-srai.hex");
+		`load("rv32ui-p-srai.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-andi.hex");
+		`load("rv32ui-p-andi.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-bne.hex");
+		`load("rv32ui-p-bne.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-lui.hex");
+		`load("rv32ui-p-lui.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-slli.hex");
+		`load("rv32ui-p-slli.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-srl.hex");
+		`load("rv32ui-p-srl.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-auipc.hex");
+		`load("rv32ui-p-auipc.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-jal.hex");
+		`load("rv32ui-p-jal.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-lw.hex");
+		`load("rv32ui-p-lw.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-slt.hex");
+		`load("rv32ui-p-slt.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-srli.hex");
+		`load("rv32ui-p-srli.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-beq.hex");
+		`load("rv32ui-p-beq.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-jalr.hex");
+		`load("rv32ui-p-jalr.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-or.hex");
+		`load("rv32ui-p-or.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-slti.hex");
+		`load("rv32ui-p-slti.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 		reset();
-		load("rv32ui-p-sub.hex");
+		`load("rv32ui-p-sub.hex");
 		run();
 		`assert(core.gprs.regs[1], 32'h7f2a214b)
 
 
-		$dumpflush;
 		$display("All test finished");
 	end
 endmodule

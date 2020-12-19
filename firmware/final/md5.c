@@ -123,6 +123,13 @@ void md5(const uint32_t *initial_msg, uint32_t initial_len, uint32_t *digest) {
     to_bytes(h3, digest + 12);
 }
 
+static void print8bithex(uint32_t hex) {
+	uint32_t digit = hex >> 4;
+	putchar(digit > 9 ? digit - 10 + 'a' : digit + '0');
+	digit = hex & 0xf;
+	putchar(digit > 9 ? digit - 10 + 'a' : digit + '0');
+}
+
 int cmd_md5(int *args) {
     if (args == NULL) {
         printstr("Need arg <msg>\n");
@@ -132,10 +139,15 @@ int cmd_md5(int *args) {
     uint32_t len = 0;
     while (args[len] != '\0') len++;
 
+    printdec(len);
+    printstr(" : \"");
+    for (int *i = args; *i; i++) putchar(*i);
+    printstr("\" - ");
+
     uint32_t digest[16];
     md5((uint32_t *)args, len, digest);
 
-    for (int i = 0; i < 16; i++) printhex(digest[i]);
+    for (int i = 0; i < 16; i++) print8bithex(digest[i]);
     putchar('\n');
 
     return 0;

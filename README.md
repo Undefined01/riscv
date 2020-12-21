@@ -13,10 +13,14 @@ Quartus 项目位于 [fpga](https://github.com/Undefined01/riscv/tree/master/fpg
 设计源文件主要位于 [fpga/src](https://github.com/Undefined01/riscv/tree/master/fpga/src) 目录。
 
 * CPU 频率： 50MHz
+
 * 上电启动地址： 0x00000000 （非标准）
-* 内存大小： 16KB （定义于 [common.v](https://github.com/Undefined01/riscv/blob/cea991249bc0af470cd6f9b74ef122cea91e5eaf/fpga/src/common.v#L21)）
+
+* 内存大小： 64KB （定义于 [common.v](https://github.com/Undefined01/riscv/blob/cea991249bc0af470cd6f9b74ef122cea91e5eaf/fpga/src/common.v#L21)）
 * 指令集： RV32I （未实现特权相关指令，如 `ecall` 和 `sret`。未实现非四字节内存访问，如 `lb`, `sh` 等等。设计程序时应总是使用 `int` 等四字节变量。）
+
 * 内置固件： firmware/final （定义于 [perip.v](https://github.com/Undefined01/riscv/blob/cea991249bc0af470cd6f9b74ef122cea91e5eaf/fpga/src/perip/ram.v#L14)）
+
 * MMIO： 定义于 [common.v](https://github.com/Undefined01/riscv/blob/cea991249bc0af470cd6f9b74ef122cea91e5eaf/fpga/src/common.v#L21-L29) ，在 [perip.v](https://github.com/Undefined01/riscv/blob/master/fpga/src/perip/perip.v) 中进行转发。具体映射如下：
 
   | Address                 | Description                                                  |
@@ -37,6 +41,10 @@ Quartus 项目位于 [fpga](https://github.com/Undefined01/riscv/tree/master/fpg
 
 编译完测试用例后，可在 `Quartus` 中进行 RTL 级仿真。
 激励模块中有简易的测试框架，能够对 CPU 进行自动化测试。
+
+## 持续集成
+
+由于项目的开发基于 `git/Github` 并配置了相应的测试脚本，因此可以在每次提交 `commit` 时自动触发持续集成进行测试。持续集成使用的测试用例与上一小节中的测试方法相同，但是测试由 `Github Actions` 自动执行。因此在小组成员各自独立编写代码的过程中，如果由于代码功能或接口的修改导致另一模块出现错误，会被 `Github` 立即发现并且定位到 `commit` 级别。再根据 `git diff` 重新审查代码的修改，即可确认错误。既减少了修改代码时的心智负担，又能避免日后合并代码时发生隐含的错误。
 
 ## 软件设计
 

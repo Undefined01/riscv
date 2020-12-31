@@ -18,7 +18,7 @@
 `define MEM_READ		1'b0
 `define MEM_WRITE		1'b1
 
-`define RAM_SIZE		16 * 1024 / 4	// 16 KB
+`define RAM_SIZE		64 * 1024 / 4	// 64 KB
 `define RAM_ADDR_L		32'h00000000
 `define RAM_ADDR_R		32'h10000000
 `define TERM_ADDR_L		32'ha0000000

@@ -16,8 +16,7 @@ set_global_assignment -name SEARCH_PATH src/lib
 set_global_assignment -name VERILOG_FILE src/lib/clk_div/clk_div.v
 set_global_assignment -name VERILOG_FILE src/lib/7segment/seg.v
 set_global_assignment -name VERILOG_FILE src/lib/counter/counter.v
-set_global_assignment -name VERILOG_FILE src/lib/keyboard/get_negedge.v
-set_global_assignment -name VERILOG_FILE src/lib/keyboard/ps2_keyboard_ext.v
+set_global_assignment -name VERILOG_FILE src/lib/keyboard/ps2_keyboard.v
 set_global_assignment -name VERILOG_FILE src/lib/vga_term/vga_term.v
 
 set_global_assignment -name VERILOG_FILE src/core/riscv_core.v
@@ -454,4 +453,5 @@ set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
+set_global_assignment -name SMART_RECOMPILE ON
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

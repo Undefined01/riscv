@@ -1,6 +1,6 @@
 module bid_counter
 #(
-	parameter bound,
+	parameter bound = 2,
 	parameter width = $clog2(bound)
 ) (
 	input clk,
@@ -30,7 +30,7 @@ endmodule
 
 module bid_counter_2bcd
 #(
-	parameter bcd_bound
+	parameter bcd_bound = 2
 )
 (
 	input clk,

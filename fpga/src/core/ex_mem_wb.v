@@ -32,12 +32,12 @@ module ex_mem_wb(
 
 	always @(*) begin
 		if (ex_valid && ex_mem_ena == `DISABLE) begin
-			through_gprs_waddr_o <= gprs_waddr_i;
-			through_gprs_wdata_o <= gprs_wdata_i;
+			through_gprs_waddr_o = gprs_waddr_i;
+			through_gprs_wdata_o = gprs_wdata_i;
 		end
 		else begin
-			through_gprs_waddr_o <= `REG_X0;
-			through_gprs_wdata_o <= `DATA_ZERO;
+			through_gprs_waddr_o = `REG_X0;
+			through_gprs_wdata_o = `DATA_ZERO;
 		end
 	end
 	

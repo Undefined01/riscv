@@ -1,8 +1,8 @@
 #include <stdio.h>
 
 int main(int argc, char **argv) {
-	FILE *bin = fopen(argv[1], "r");
-	FILE *hex = fopen(argv[2], "w");
+	FILE *bin = fopen(argv[1], "rb");
+	FILE *hex = fopen(argv[2], "wb");
 
 	int count = 0;
 	while (!feof(bin)) {

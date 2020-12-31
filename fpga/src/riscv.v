@@ -38,6 +38,8 @@ module riscv(
 	wire				mem_rw;
 	wire [`DATA_BUS]	mem_addr, mem_rdata, mem_wdata;
 	
+	wire [7:0] seg,seg2;
+	
 	perip perip(
 		.clk(clk),
 		.rst(rst),
@@ -70,7 +72,7 @@ module riscv(
 	
 	
 	seg_uint8 seg_pc (1'b1, if_addr[7:0], HEX1, HEX0);
-	seg_uint8 seg_mem (1'b1, mem_addr[7:0], HEX3, HEX2);
-	seg_uint8 seg_memd (1'b1, mem_wdata[7:0], HEX5, HEX4);
+	seg_uint8 seg_mem (1'b1, seg2, HEX3, HEX2);
+	seg_uint8 seg_memd (1'b1, seg, HEX5, HEX4);
 
 endmodule

@@ -81,7 +81,7 @@ module perip(
 		.rst(rst),
 		.ena(term_ena),
 		.rw(mem_rw),
-		.addr(mem_addr),
+		.addr(term_addr),
 		.rdata(term_rdata),
 		.wdata(mem_wdata),
 		.VGA_R(VGA_R),
@@ -99,7 +99,7 @@ module perip(
 		.rst(rst),
 		.ena(kbd_ena),
 		.rw(mem_rw),
-		.addr(mem_addr),
+		.addr(kbd_addr),
 		.rdata(kbd_rdata),
 		.wdata(mem_wdata),
 		.PS2_CLK(PS2_CLK),
@@ -111,7 +111,7 @@ module perip(
 		.rst(rst),
 		.ena(time_ena),
 		.rw(mem_rw),
-		.addr(mem_addr),
+		.addr(time_addr),
 		.rdata(time_rdata),
 		.wdata(mem_wdata)
 	);

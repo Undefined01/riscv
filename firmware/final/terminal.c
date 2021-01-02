@@ -58,8 +58,10 @@ int gcmd() {
     do {
         ch = getchar();
         if (ch == '\b') {
+          if (cmd_len > 0) {
             backspace();
             cmd[--cmd_len] = '\0';
+          }
         } else {
             putchar(ch);
             if (ch == '\n') {
